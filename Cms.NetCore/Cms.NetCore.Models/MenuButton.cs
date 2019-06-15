@@ -9,7 +9,7 @@ namespace Cms.NetCore.Models
     /// <summary>
     /// 菜单按钮关联表
     /// </summary>
-    public class MenuButton
+    public class MenuButton :IEntity
     {
         public Guid Id { get; set; }
         public Guid MenuId { get; set; }

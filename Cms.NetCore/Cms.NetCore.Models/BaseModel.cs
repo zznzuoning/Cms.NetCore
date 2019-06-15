@@ -5,12 +5,10 @@ using System.Text;
 
 namespace Cms.NetCore.Models
 {
-    public class BaseModel
+    public class BaseModel : IEntity
     {
-        /// <summary>
-        /// 主键
-        /// </summary>
         public Guid Id { get; set; }
+
         /// <summary>
         /// 是否删除
         /// </summary>
@@ -35,5 +33,7 @@ namespace Cms.NetCore.Models
         /// 最后修改时间
         /// </summary>
         public DateTime UpdateTime { get; set; }
+
+       
     }
 }

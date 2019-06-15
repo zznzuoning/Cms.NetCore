@@ -8,6 +8,8 @@ namespace Cms.NetCore.Models
 {
     public class CmsDBContext : DbContext
     {
+       
+
         //public DbSet<Role> Role { get; set; }
         public CmsDBContext(DbContextOptions<CmsDBContext> options) : base(options)
         {

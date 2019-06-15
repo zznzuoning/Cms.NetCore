@@ -1,8 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
+using Alexinea.Autofac.Extensions.DependencyInjection;
+using Autofac;
+using Cms.NetCore.Admin.autofac;
+using Cms.NetCore.IRepository;
+using Cms.NetCore.IServices;
 using Cms.NetCore.Models;
+using Cms.NetCore.Repository;
+using Cms.NetCore.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -24,7 +32,7 @@ namespace Cms.NetCore.Admin
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -37,6 +45,11 @@ namespace Cms.NetCore.Admin
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<CmsDBContext>(options =>
         options.UseSqlServer(Configuration.GetConnectionString("CustomerDBDatabase")));
+            //使用AUTOFAC依赖注入
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+            builder.RegisterModule<DefaultModuleRegister>();
+            return new AutofacServiceProvider(builder.Build());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

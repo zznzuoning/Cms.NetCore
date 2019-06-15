@@ -9,7 +9,7 @@ namespace Cms.NetCore.Models
     /// <summary>
     /// 用户部门关联表
     /// </summary>
-    public class UserDepartment
+    public class UserDepartment : IEntity
     {
         public Guid Id { get; set; }
         public Guid UserManagerId { get; set; }

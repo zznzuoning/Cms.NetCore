@@ -9,7 +9,7 @@ namespace Cms.NetCore.Models
     /// <summary>
     /// 用户登录表
     /// </summary>
-    public class UserLogin
+    public class UserLogin : IEntity
     {
         public Guid Id { get; set; }
         /// <summary>

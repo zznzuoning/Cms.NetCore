@@ -8,17 +8,18 @@ using Cms.NetCore.Admin.Models;
 using Cms.NetCore.Models;
 using Cms.NetCore.Models.ModelConfigurations;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Cms.NetCore.IServices;
+using Cms.NetCore.ViewModels;
 
 namespace Cms.NetCore.Admin.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly CmsDBContext _context;
 
-        public HomeController(CmsDBContext context)
+        private readonly IRoleServices _service;
+        public HomeController(IRoleServices service)
         {
-            _context = context;
-            
+           this._service = service;
         }
         public IActionResult Index()
         {
@@ -27,8 +28,7 @@ namespace Cms.NetCore.Admin.Controllers
                 Remarks="123"
               
             };
-            _context.Set<Role>().Add(role);
-            _context.SaveChanges();
+          Result result= _service.Insert(role);
             return View();
         }
 

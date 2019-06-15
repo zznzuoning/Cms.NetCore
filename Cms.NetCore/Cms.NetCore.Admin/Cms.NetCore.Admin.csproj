@@ -7,6 +7,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="Alexinea.Autofac.Extensions.DependencyInjection" Version="4.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
@@ -15,7 +16,13 @@
 
 
   <ItemGroup>
+    <ProjectReference Include="..\Cms.NetCore.Infrastructure\Cms.NetCore.Infrastructure.csproj" />
+    <ProjectReference Include="..\Cms.NetCore.IRepository\Cms.NetCore.IRepository.csproj" />
+    <ProjectReference Include="..\Cms.NetCore.IServices\Cms.NetCore.IServices.csproj" />
     <ProjectReference Include="..\Cms.NetCore.Models\Cms.NetCore.Models.csproj" />
+    <ProjectReference Include="..\Cms.NetCore.Repository\Cms.NetCore.Repository.csproj" />
+    <ProjectReference Include="..\Cms.NetCore.Services\Cms.NetCore.Services.csproj" />
+    <ProjectReference Include="..\Cms.NetCore.ViewModels\Cms.NetCore.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

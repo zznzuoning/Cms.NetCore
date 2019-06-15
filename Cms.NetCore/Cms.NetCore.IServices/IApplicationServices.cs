@@ -1,36 +1,33 @@
 ﻿using Cms.NetCore.Infrastructure.enums;
 using Cms.NetCore.Infrastructure.Specifications;
-using Cms.NetCore.Models;
+using Cms.NetCore.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Cms.NetCore.IRepository
+namespace Cms.NetCore.IServices
 {
-    public interface IBaseRepository<T> : IDisposable where T : class
+    public interface IApplicationServices<T> : IDisposable where T : class
     {
-
-        IEntityFrameworkRepositoryContext EFContext { get; }
         #region 同步
         /// <summary>
         /// 通过主键获取实体对象
         /// </summary>
         /// <param name="id">主键ID</param>
         /// <returns></returns>
-        T Get(Guid id);
+        DataResult<T> Get(Guid id);
         /// <summary>
         /// 获取所有的数据
         /// </summary>
         /// <returns></returns>
-        List<T> GetList();
+        ListResult<T> GetList();
         /// <summary>
         /// 执行具有条件的查询，并将结果映射到强类型列表
         /// </summary>
         /// <param name="whereConditions">条件</param>
         /// <returns></returns>
-        List<T> GetList(ISpecification<T> whereConditions);
+        ListResult<T> GetList(ISpecification<T> whereConditions);
         /// <summary>
         /// 使用where子句执行查询，并将结果映射到具有Paging的强类型List
         /// </summary>
@@ -40,38 +37,38 @@ namespace Cms.NetCore.IRepository
         /// <param name="sortOrder">排序方式(倒序，正序)</param>
         /// <param name="sortPredicate">排序字段</param>
         /// <returns></returns>
-        List<T> GetListPaged(ISpecification<T> whereConditions, Expression<Func<T, dynamic>> sortPredicate, SortOrder sortOrder, int pageNumber, int pageSize);
+        PageResult<T> GetListPaged(ISpecification<T> whereConditions, Expression<Func<T, dynamic>> sortPredicate, SortOrder sortOrder, int pageNumber, int pageSize);
         /// <summary>
         /// 插入一条记录并返回主键值(自增类型返回主键值，否则返回null)
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        int Insert(T entity);
+        Result Insert(T entity);
         /// <summary>
         /// 更新一条数据并返回影响的行数
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        int Update(T entity);
-       
+        Result Update(T entity);
+
         /// <summary>
         /// 根据实体删除一条数据
         /// </summary>
         /// <param name="entity">实体</param>
         /// <returns>返回影响的行数</returns>
-        int Delete(T entity);
+        Result Delete(T entity);
         /// <summary>
         /// 条件删除多条记录
         /// </summary>
         /// <param name="whereConditions">条件</param>
         /// <returns>影响的行数</returns>
-        int DeleteList(ISpecification<T> whereConditions);
+        Result DeleteList(ISpecification<T> whereConditions);
         /// <summary>
         /// 满足条件的记录数量
         /// </summary>
         /// <param name="whereConditions"></param>
         /// <returns></returns>
-        int RecordCount(ISpecification<T> whereConditions);
+        CountResult RecordCount(ISpecification<T> whereConditions);
         #endregion
         #region 异步
         /// <summary>
@@ -79,18 +76,18 @@ namespace Cms.NetCore.IRepository
         /// </summary>
         /// <param name="id">主键ID</param>
         /// <returns></returns>
-        Task<T> GetAsync(Guid id);
+        Task<DataResult<T>> GetAsync(Guid id);
         /// <summary>
         /// 获取所有的数据
         /// </summary>
         /// <returns></returns>
-        Task<List<T>> GetListAsync();
+        Task<ListResult<T>> GetListAsync();
         /// <summary>
         /// 执行具有条件的查询，并将结果映射到强类型列表
         /// </summary>
         /// <param name="whereConditions">条件</param>
         /// <returns></returns>
-        Task<List<T>> GetListAsync(ISpecification<T> whereConditions);
+        Task<ListResult<T>> GetListAsync(ISpecification<T> whereConditions);
         /// <summary>
         /// 使用where子句执行查询，并将结果映射到具有Paging的强类型List
         /// </summary>
@@ -100,38 +97,38 @@ namespace Cms.NetCore.IRepository
         /// <param name="sortOrder">排序方式(倒序，正序)</param>
         /// <param name="sortPredicate">排序字段</param>
         /// <returns></returns>
-        Task<List<T>> GetListPagedAsync(ISpecification<T> whereConditions, Expression<Func<T, dynamic>> sortPredicate, SortOrder sortOrder, int pageNumber, int pageSize);
+        Task<PageResult<T>> GetListPagedAsync(ISpecification<T> whereConditions, Expression<Func<T, dynamic>> sortPredicate, SortOrder sortOrder, int pageNumber, int pageSize);
         /// <summary>
         /// 插入一条记录并返回主键值
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        Task<int> InsertAsync(T entity);
+        Task<Result> InsertAsync(T entity);
         /// <summary>
         /// 更新一条数据并返回影响的行数
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        Task<int> UpdateAsync(T entity);
-      
+        Task<Result> UpdateAsync(T entity);
+
         /// <summary>
         /// 根据实体删除一条数据
         /// </summary>
         /// <param name="entity">实体</param>
         /// <returns>返回影响的行数</returns>
-        Task<int> DeleteAsync(T entity);
+        Task<Result> DeleteAsync(T entity);
         /// <summary>
         /// 条件删除多条记录
         /// </summary>
         /// <param name="whereConditions">条件</param>
         /// <returns>影响的行数</returns>
-        Task<int> DeleteListAsync(ISpecification<T> whereConditions);
+        Task<Result> DeleteListAsync(ISpecification<T> whereConditions);
         /// <summary>
         /// 满足条件的记录数量
         /// </summary>
         /// <param name="whereConditions"></param>
         /// <returns></returns>
-        Task<int> RecordCountAsync(ISpecification<T> whereConditions);
+        Task<CountResult> RecordCountAsync(ISpecification<T> whereConditions);
         #endregion
     }
 }

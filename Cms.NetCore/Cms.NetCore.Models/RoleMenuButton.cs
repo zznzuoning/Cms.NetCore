@@ -9,7 +9,7 @@ namespace Cms.NetCore.Models
     /// <summary>
     /// 角色菜单按钮关联表
     /// </summary>
-    public class RoleMenuButton
+    public class RoleMenuButton : IEntity
     {
         public Guid Id { get; set; }
         public Guid RoleId { get; set; }

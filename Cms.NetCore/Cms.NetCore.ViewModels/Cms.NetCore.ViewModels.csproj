@@ -5,12 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Cms.NetCore.Infrastructure\Cms.NetCore.Infrastructure.csproj" />
-    <ProjectReference Include="..\Cms.NetCore.Models\Cms.NetCore.Models.csproj" />
   </ItemGroup>
 
 </Project>
