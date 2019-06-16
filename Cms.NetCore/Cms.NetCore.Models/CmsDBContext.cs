@@ -14,9 +14,9 @@ namespace Cms.NetCore.Models
         public CmsDBContext(DbContextOptions<CmsDBContext> options) : base(options)
         {
 
-
+          
         }
-
+      
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new RoleConfiguration())

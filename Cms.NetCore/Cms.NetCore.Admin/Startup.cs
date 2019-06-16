@@ -44,7 +44,7 @@ namespace Cms.NetCore.Admin
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<CmsDBContext>(options =>
-        options.UseSqlServer(Configuration.GetConnectionString("CustomerDBDatabase")));
+        options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("CustomerDBDatabase"), b => b.MigrationsAssembly("Cms.NetCore.Admin")));
             //使用AUTOFAC依赖注入
             var builder = new ContainerBuilder();
             builder.Populate(services);

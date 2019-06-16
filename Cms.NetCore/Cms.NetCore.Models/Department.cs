@@ -26,8 +26,8 @@ namespace Cms.NetCore.Models
         /// <summary>
         /// 父级部门
         /// </summary>
-        public Department Departments { get; set; }
-        public ICollection<Department> Departmentss { get; set; }
-        public ICollection<UserDepartment> UserDepartments { get; set; }
+        public virtual Department Departments { get; set; }
+        public virtual ICollection<Department> Departmentss { get; set; }
+        public virtual ICollection<UserDepartment> UserDepartments { get; set; }
     }
 }

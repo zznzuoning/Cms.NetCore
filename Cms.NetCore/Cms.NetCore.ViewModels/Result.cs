@@ -14,10 +14,10 @@ namespace Cms.NetCore.ViewModels
         /// <summary>
         /// 状态码
         /// </summary>
-        public int code { get; set; } = (int)StatusCode.Success;
+        public int code { get; set; } = 0;
         /// <summary>
         /// 信息
         /// </summary>
-        public string msg { get; set; } = StatusCode.Success.GetEnumText();
+        public string msg { get; set; } = "";
     }
 }

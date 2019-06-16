@@ -9,6 +9,7 @@ namespace Cms.NetCore.Models
     {
         public Guid Id { get; set; }
 
+        public int Sid { get; set; }
         /// <summary>
         /// 是否删除
         /// </summary>
@@ -17,8 +18,8 @@ namespace Cms.NetCore.Models
         /// 添加人
         /// </summary>
         public Guid? CreateUserId { get; set; }
-        [NotMapped]
-        public UserManager CreateUser { get; set; }
+        
+        public virtual UserManager CreateUser { get; set; }
         /// <summary>
         /// 添加时间
         /// </summary>
@@ -27,12 +28,12 @@ namespace Cms.NetCore.Models
         ///最后修改人
         /// </summary>
         public Guid? UpdateUserId { get; set; }
-        [NotMapped]
-        public UserManager UpdateUser { get; set; }
+       
+        public virtual UserManager UpdateUser { get; set; }
         /// <summary>
         /// 最后修改时间
         /// </summary>
-        public DateTime UpdateTime { get; set; }
+        public virtual DateTime UpdateTime { get; set; }
 
        
     }

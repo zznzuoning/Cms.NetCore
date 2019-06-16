@@ -22,6 +22,7 @@ namespace Cms.NetCore.Models.ModelConfigurations
             builder.Property(d => d.LogInCount).HasColumnName("LogInCount");
             builder.Property(d => d.LastLoginIp).HasColumnName("LastLoginIp");
             builder.Property(d => d.LastLoginTime).HasColumnName("LastLoginTime");
+            
         }
     }
 }

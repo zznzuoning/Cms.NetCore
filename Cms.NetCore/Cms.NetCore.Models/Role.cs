@@ -24,8 +24,8 @@ namespace Cms.NetCore.Models
         /// <summary>
         /// 角色的操作权限
         /// </summary>
-        public ICollection<RoleMenuButton> RoleMenuButtons { get; set; }
-        public ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<RoleMenuButton> RoleMenuButtons { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
        
     }
 }

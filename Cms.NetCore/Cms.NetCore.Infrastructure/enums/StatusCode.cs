@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Cms.NetCore.Infrastructure.enums
 {
-    public enum StatusCode
+    public enum StatusCodeEnum
     {
         /// <summary>
         /// 请求(或处理)成功

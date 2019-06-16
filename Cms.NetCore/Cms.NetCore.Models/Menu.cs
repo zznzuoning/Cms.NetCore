@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Cms.NetCore.Models
 {
-    [NotMapped]
+    
     /// <summary>
     /// 菜单表
     /// </summary>
@@ -38,8 +38,8 @@ namespace Cms.NetCore.Models
         /// <summary>
         /// 父类菜单
         /// </summary>
-        public Menu ParentMenu { get; set; }
-        public ICollection<Menu> ParentMenus { get; set; }
-        public ICollection<MenuButton> MenuButtons { get; set; }
+        public virtual Menu ParentMenu { get; set; }
+        public virtual ICollection<Menu> ParentMenus { get; set; }
+        public virtual ICollection<MenuButton> MenuButtons { get; set; }
     }
 }

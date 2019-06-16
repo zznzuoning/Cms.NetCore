@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Cms.NetCore.Services
 {
-    public class ApplicationServices<T> : IApplicationServices<T> where T : class
+    public class ApplicationServices<T> : IApplicationServices<T> where T : class,new()
     {
         private readonly IBaseRepository<T> _baseRepository;
         public ApplicationServices(IBaseRepository<T> baseRepository)
@@ -26,23 +26,23 @@ namespace Cms.NetCore.Services
             {
                 if (entity == null)
                 {
-                    result.code = (int)StatusCode.ParameterError;
-                    result.msg = StatusCode.ParameterError.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return result;
                 }
 
                 int isDelete = _baseRepository.Delete(entity);
                 if (isDelete == 0)
                 {
-                    result.code = (int)StatusCode.Accepted;
-                    result.msg = StatusCode.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.Accepted;
+                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
                 }
                 return result;
             }
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -56,23 +56,23 @@ namespace Cms.NetCore.Services
             {
                 if (entity == null)
                 {
-                    result.code = (int)StatusCode.ParameterError;
-                    result.msg = StatusCode.ParameterError.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return  result;
                 }
 
                 int isDelete = await _baseRepository.DeleteAsync(entity);
                 if (isDelete == 0)
                 {
-                    result.code = (int)StatusCode.Accepted;
-                    result.msg = StatusCode.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.Accepted;
+                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
                 }
                 return result;
             }
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -87,15 +87,15 @@ namespace Cms.NetCore.Services
                 int isDelete =  _baseRepository.DeleteList(whereConditions);
                 if (isDelete == 0)
                 {
-                    result.code = (int)StatusCode.Accepted;
-                    result.msg = StatusCode.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.Accepted;
+                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
                 }
                 return result;
             }
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -109,56 +109,21 @@ namespace Cms.NetCore.Services
                 int isDelete = await _baseRepository.DeleteListAsync(whereConditions);
                 if (isDelete == 0)
                 {
-                    result.code = (int)StatusCode.Accepted;
-                    result.msg = StatusCode.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.Accepted;
+                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
                 }
                 return result;
             }
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
         }
 
-        #region IDisposable Support
-        private bool disposedValue = false; // 要检测冗余调用
 
-        //对外调用的上下文
-        public IEntityFrameworkRepositoryContext EFContext { get; }
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // TODO: 释放托管状态(托管对象)。
-                }
-
-                // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
-                // TODO: 将大型字段设置为 null。
-
-                disposedValue = true;
-            }
-        }
-
-        // TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
-        // ~EntityFrameworkRepository() {
-        //   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
-        //   Dispose(false);
-        // }
-
-        // 添加此代码以正确实现可处置模式。
-        public void Dispose()
-        {
-            // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
-            Dispose(true);
-            // TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
-            // GC.SuppressFinalize(this);
-        }
-        #endregion
 
         public DataResult<T> Get(Guid id)
         {
@@ -167,8 +132,8 @@ namespace Cms.NetCore.Services
             {
                 if (id == Guid.Empty || id == null)
                 {
-                    result.code = (int)StatusCode.ParameterError;
-                    result.msg = StatusCode.ParameterError.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return result;
                 }
                 T t = _baseRepository.Get(id);
@@ -181,7 +146,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -194,11 +159,12 @@ namespace Cms.NetCore.Services
             {
                 if (id == Guid.Empty || id == null)
                 {
-                    result.code = (int)StatusCode.ParameterError;
-                    result.msg = StatusCode.ParameterError.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return result;
                 }
-                T t = await _baseRepository.GetAsync(id);
+                T t = new T();
+                t = await _baseRepository.GetAsync(id);
                 if (t != null)
                 {
                     result.data = t;
@@ -208,7 +174,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -229,7 +195,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -250,7 +216,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -271,7 +237,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -292,7 +258,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -314,7 +280,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -336,7 +302,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -349,15 +315,15 @@ namespace Cms.NetCore.Services
             {
                 if (entity == null)
                 {
-                    result.code = (int)StatusCode.ParameterError;
-                    result.msg = StatusCode.ParameterError.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return result;
                 }
                 int isInsert = _baseRepository.Insert(entity);
                 if (isInsert == 0)
                 {
-                    result.code = (int)StatusCode.Accepted;
-                    result.msg = StatusCode.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.Accepted;
+                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
                     return result;
                 }
                 return result;
@@ -365,7 +331,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -378,15 +344,15 @@ namespace Cms.NetCore.Services
             {
                 if (entity == null)
                 {
-                    result.code = (int)StatusCode.ParameterError;
-                    result.msg = StatusCode.ParameterError.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return result;
                 }
                 int isInsert = await _baseRepository.InsertAsync(entity);
                 if (isInsert == 0)
                 {
-                    result.code = (int)StatusCode.Accepted;
-                    result.msg = StatusCode.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.Accepted;
+                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
                     return result;
                 }
                 return result;
@@ -394,7 +360,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -411,7 +377,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -428,7 +394,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -441,15 +407,15 @@ namespace Cms.NetCore.Services
             {
                 if (entity == null)
                 {
-                    result.code = (int)StatusCode.ParameterError;
-                    result.msg = StatusCode.ParameterError.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return result;
                 }
                 int isUpdate =  _baseRepository.Update(entity);
                 if (isUpdate == 0)
                 {
-                    result.code = (int)StatusCode.Accepted;
-                    result.msg = StatusCode.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.Accepted;
+                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
                     return result;
                 }
                 return result;
@@ -457,7 +423,7 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
@@ -470,15 +436,15 @@ namespace Cms.NetCore.Services
             {
                 if (entity == null)
                 {
-                    result.code = (int)StatusCode.ParameterError;
-                    result.msg = StatusCode.ParameterError.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return result;
                 }
                 int isUpdate = await _baseRepository.UpdateAsync(entity);
                 if (isUpdate == 0)
                 {
-                    result.code = (int)StatusCode.Accepted;
-                    result.msg = StatusCode.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.Accepted;
+                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
                     return result;
                 }
                 return result;
@@ -486,10 +452,45 @@ namespace Cms.NetCore.Services
             catch (Exception ex)
             {
                 ex.Source = this.GetType().Name;
-                result.code = (int)StatusCode.Error;
+                result.code = (int)StatusCodeEnum.Error;
                 result.msg = $"{ex.Source}出现异常,请联系管理员";
                 return result;
             }
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // 要检测冗余调用
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: 释放托管状态(托管对象)。
+                }
+
+                // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
+                // TODO: 将大型字段设置为 null。
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
+        // ~ApplicationServices() {
+        //   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
+        //   Dispose(false);
+        // }
+
+        // 添加此代码以正确实现可处置模式。
+        public void Dispose()
+        {
+            // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
+            Dispose(true);
+            // TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

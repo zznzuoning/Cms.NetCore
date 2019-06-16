@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Cms.NetCore.Models
 {
-    [NotMapped]
+  
     /// <summary>
     /// 菜单按钮关联表
     /// </summary>
@@ -14,7 +14,7 @@ namespace Cms.NetCore.Models
         public Guid Id { get; set; }
         public Guid MenuId { get; set; }
         public Guid ButtonId { get; set; }
-        public Menu Menu { get; set; }
-        public Buttion Buttion { get; set; }
+        public virtual Menu Menu { get; set; }
+        public virtual Buttion Buttion { get; set; }
     }
 }

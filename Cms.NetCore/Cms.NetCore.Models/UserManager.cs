@@ -22,7 +22,7 @@ namespace Cms.NetCore.Models
         /// <summary>
         /// 手机号
         /// </summary>
-        public int Mobilephone { get; set; }
+        public string Mobilephone { get; set; }
         /// <summary>
         /// 邮箱
         /// </summary>
@@ -43,11 +43,11 @@ namespace Cms.NetCore.Models
         /// <summary>
         /// 用户登录信息
         /// </summary>
-        public UserLogin UserLogin { get; set; }
+        public virtual UserLogin UserLogin { get; set; }
 
-        public ICollection<OperationalLog> OperationalLogs { get; set; }
-        public ICollection<UserRole> UserRoles { get; set; }
-        public ICollection<UserDepartment> UserDepartments { get; set; }
+        public virtual ICollection<OperationalLog> OperationalLogs { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<UserDepartment> UserDepartments { get; set; }
         //public ICollection<Department> Departments { get; set; }
     }
 }

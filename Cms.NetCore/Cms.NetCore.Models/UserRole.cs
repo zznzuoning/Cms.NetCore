@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Cms.NetCore.Models
 {
-    [NotMapped]
+
     /// <summary>
     /// 用户角色关联表
     /// </summary>
@@ -14,7 +14,7 @@ namespace Cms.NetCore.Models
         public Guid Id { get; set; }
         public Guid UserManagerId { get; set; }
         public Guid RoleId { get; set; }
-        public UserManager UserManager { get; set; }
-        public Role Role { get; set; }
+        public virtual UserManager UserManager { get; set; }
+        public virtual Role Role { get; set; }
     }
 }

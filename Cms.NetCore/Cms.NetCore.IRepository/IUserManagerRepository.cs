@@ -7,5 +7,6 @@ namespace Cms.NetCore.IRepository
 {
     public interface IUserManagerRepository : IBaseRepository<UserManager>
     {
+        
     }
 }

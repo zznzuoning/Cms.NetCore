@@ -16,27 +16,22 @@ namespace Cms.NetCore.Admin.Controllers
     public class HomeController : Controller
     {
 
-        private readonly IRoleServices _service;
-        public HomeController(IRoleServices service)
+        private readonly IUserManagerServices _service;
+        public HomeController(IUserManagerServices service)
         {
            this._service = service;
         }
         public IActionResult Index()
         {
-            Role role = new Role {
-                Name = "超级管刘安",
-                Remarks="123"
-              
-            };
-          Result result= _service.Insert(role);
+            
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Main()
         {
+
             return View();
         }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -35,6 +35,6 @@ namespace Cms.NetCore.Models
         /// <summary>
         /// 用户信息
         /// </summary>
-        public UserManager UserManager { get; set; }
+        public virtual UserManager UserManager { get; set; }
     }
 }

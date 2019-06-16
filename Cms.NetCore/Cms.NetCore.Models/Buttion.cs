@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Cms.NetCore.Models
 {
-    [NotMapped]
     /// <summary>
     /// 按钮表
     /// </summary>
@@ -31,6 +30,6 @@ namespace Cms.NetCore.Models
         /// 描述
         /// </summary>
         public string Description { get; set; }
-        public ICollection<MenuButton> MenuButtons { get; set; }
+        public virtual ICollection<MenuButton> MenuButtons { get; set; }
     }
 }
