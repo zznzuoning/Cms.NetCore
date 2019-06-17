@@ -33,7 +33,7 @@ namespace Cms.NetCore.Models
         /// <summary>
         /// 最后修改时间
         /// </summary>
-        public virtual DateTime UpdateTime { get; set; }
+        public  DateTime UpdateTime { get; set; }
 
        
     }

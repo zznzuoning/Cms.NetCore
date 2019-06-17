@@ -1,6 +1,6 @@
 //获取系统时间
 var newDate = '';
-getLangDate();
+//getLangDate();
 //值小于10时，在前面补0
 function dateFilter(date){
     if(date < 10){return "0"+date;}
@@ -25,7 +25,8 @@ function getLangDate(){
 
 layui.use(['form','element','layer','jquery'],function(){
     var form = layui.form,
-        layer = parent.layer === undefined ? layui.layer : top.layer,
+        //layer = parent.layer === undefined ? layui.layer : top.layer,
+        layer =  layui.layer,
         element = layui.element;
         $ = layui.jquery;
     //上次登录时间【此处应该从接口获取，实际使用中请自行更换】
@@ -45,7 +46,7 @@ layui.use(['form','element','layer','jquery'],function(){
         fillParameter(systemParameter);
     }else{
         $.ajax({
-            url : "../json/systemParameter.json",
+            url : "/json/systemParameter.json",
             type : "get",
             dataType : "json",
             success : function(data){
@@ -73,7 +74,7 @@ layui.use(['form','element','layer','jquery'],function(){
     }
 
     //最新文章列表
-    $.get("../json/newsList.json",function(data){
+    $.get("/json/newsList.json",function(data){
         var hotNewsHtml = '';
         for(var i=0;i<5;i++){
             hotNewsHtml += '<tr>'
@@ -86,7 +87,7 @@ layui.use(['form','element','layer','jquery'],function(){
     })
 
     //用户数量
-    $.get("../json/userList.json",function(data){
+    $.get("/json/userList.json",function(data){
         $(".userAll span").text(data.count);
     })
 

@@ -12,7 +12,7 @@ namespace Cms.NetCore.Models.ModelConfigurations
         public void Configure(EntityTypeBuilder<T> builder)
         {
             builder.HasKey(d => d.Id);
-            builder.Property(d => d.Sid).HasColumnName("Sid").ValueGeneratedOnAdd();
+            builder.Property(d => d.Sid).HasColumnName("Sid").ValueGeneratedOnAddOrUpdate();
             builder.Property(d => d.CreateUserId).HasColumnName("CreateUserId");
             builder.Property(d => d.CreateTime).HasColumnName("CreateTime").HasDefaultValueSql("getdate()").ValueGeneratedOnAdd();
             builder.Property(d => d.UpdateUserId).HasColumnName("UpdateUserId");

@@ -19,7 +19,7 @@ namespace Cms.NetCore.Infrastructure.Comm
         {
             expression = expression.Or(para);
         }
-        public static Expression<Func<T, bool>> GetExpression()
+        public  static Expression<Func<T, bool>> GetExpression()
         {
             Task.Run(()=> { }).ContinueWith(ClearExpression);
             return expression;

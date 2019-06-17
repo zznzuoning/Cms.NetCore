@@ -20,11 +20,11 @@ namespace Cms.NetCore.Admin.Controllers
     public class UserManagerController : BaseController
     {
         private readonly IUserManagerServices _userManagerServices;
-     
-        public UserManagerController(IUserManagerServices userManagerServices) 
+
+        public UserManagerController(IUserManagerServices userManagerServices)
         {
             _userManagerServices = userManagerServices;
-           
+
         }
 
         public IActionResult Index()
@@ -56,23 +56,28 @@ namespace Cms.NetCore.Admin.Controllers
                 Email = d.Email,
                 Mobilephone = d.Mobilephone,
                 IsEnabled = d.IsEnabled,
-                CreateUser = d.CreateUser == null ? "" :d.CreateUser.RealName,
+                CreateUser = d.CreateUser == null ? "" : d.CreateUser.RealName,
                 CreateTime = d.CreateTime
             }).ToList();
             return Json(new PageResult<UserList> { code = result.code, msg = result.msg, data = data, count = result.count });
         }
+        /// <summary>
+        /// 根据id获取用户信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> GetUserById([FromQuery]string id)
         {
             var result = new DataResult<UserModel>();
             Guid gid;
-            if(!Guid.TryParse(id,out gid))
+            if (!Guid.TryParse(id, out gid))
             {
                 result.code = (int)StatusCodeEnum.HttpMehtodError;
                 result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
-                return  Json(result);
+                return Json(result);
             }
             var getResult = await _userManagerServices.GetAsync(gid);
-          
+
             if (getResult.data != null)
             {
                 var user = new UserModel();
@@ -83,25 +88,34 @@ namespace Cms.NetCore.Admin.Controllers
                 user.Remarks = getResult.data.Remarks;
                 user.Mobilephone = getResult.data.Mobilephone;
                 user.Email = getResult.data.Email;
-                
+
                 result.data = user;
                 result.code = getResult.code;
                 result.msg = getResult.msg;
             }
             return Json(result);
         }
+        /// <summary>
+        /// 添加或修改
+        /// </summary>
+        /// <returns></returns>
         public IActionResult CreateOrUpdate()
         {
             return View();
         }
+        /// <summary>
+        /// 添加或修改
+        /// </summary>
+        /// <param name="userAddOrUpdate"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdate([FromForm] UserAddOrUpdate userAddOrUpdate )
+        public async Task<IActionResult> CreateOrUpdate([FromForm] UserAddOrUpdate userAddOrUpdate)
         {
             var result = new Result();
-            Guid gid=Guid.Empty;
+            Guid gid = Guid.Empty;
             if (!string.IsNullOrWhiteSpace(userAddOrUpdate.Id))
             {
-                if (Guid.TryParse(userAddOrUpdate.Id, out gid))
+                if (!Guid.TryParse(userAddOrUpdate.Id, out gid))
                 {
                     result.code = (int)StatusCodeEnum.HttpMehtodError;
                     result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
@@ -127,7 +141,7 @@ namespace Cms.NetCore.Admin.Controllers
                 };
                 user.UserLoginId = userLogin.Id;
                 user.UserLogin = userLogin;
-               var insertResult = await _userManagerServices.InsertAsync(user);
+                var insertResult = await _userManagerServices.InsertAsync(user);
                 if (insertResult.code != 0)
                 {
                     return Json(insertResult);
@@ -135,7 +149,6 @@ namespace Cms.NetCore.Admin.Controllers
             }
             else
             {
-               
                 user.UserLogin.UserName = userAddOrUpdate.UserName;
                 var updateResult = await _userManagerServices.UpdateAsync(user);
                 if (updateResult.code != 0)
@@ -147,5 +160,54 @@ namespace Cms.NetCore.Admin.Controllers
             result.msg = StatusCodeEnum.Success.GetEnumText();
             return Json(result);
         }
+
+        /// <summary>
+        /// 启用或禁用或删除用户
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> SetIsEnableOrDelete([FromForm]SetIsEnableOrDelete setIsEnableOrDelete)
+        {
+            var result = new Result
+            {
+                code = (int)StatusCodeEnum.Success,
+                msg = StatusCodeEnum.Success.GetEnumText()
+            };
+            if (string.IsNullOrEmpty(setIsEnableOrDelete.Id))
+            {
+                result.code = (int)StatusCodeEnum.HttpMehtodError;
+                result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
+                return Json(result);
+            }
+            Guid gid;
+            if (!Guid.TryParse(setIsEnableOrDelete.Id, out gid))
+            {
+                result.code = (int)StatusCodeEnum.HttpMehtodError;
+                result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
+                return Json(result);
+            }
+            var getResult = await _userManagerServices.GetAsync(gid);
+            if (getResult.code != 0)
+            {
+                return Json(getResult);
+            }
+            var user = getResult.data;
+            if (setIsEnableOrDelete.IsDelete)
+            {
+                user.IsDelete = true;
+            }
+            else
+            {
+                user.IsEnabled = !user.IsEnabled;
+            }
+            var updateResult = await _userManagerServices.UpdateAsync(user);
+            if (updateResult.code != 0)
+            {
+                return Json(updateResult);
+            }
+            return Json(result);
+        }
+      
     }
 }

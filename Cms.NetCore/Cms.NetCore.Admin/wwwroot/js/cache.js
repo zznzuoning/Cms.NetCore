@@ -3,8 +3,8 @@ var cacheStr = window.sessionStorage.getItem("cache"),
 layui.use(['form','jquery',"layer"],function() {
     var form = layui.form,
         $ = layui.jquery,
-        layer = parent.layer === undefined ? layui.layer : top.layer;
-
+       // layer = parent.layer === undefined ? layui.layer : top.layer;
+    layer =  layui.layer;
     //判断是否web端打开
     if(!/http(s*):\/\//.test(location.href)){
         layer.alert("请先将项目部署到 localhost 下再进行访问【建议通过tomcat、webstorm、hb等方式运行，不建议通过iis方式运行】，否则部分数据将无法显示");

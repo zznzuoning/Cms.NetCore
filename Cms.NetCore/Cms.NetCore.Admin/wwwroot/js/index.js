@@ -8,7 +8,8 @@ layui.use(['bodyTab','form','element','layer','jquery'],function(){
 	var form = layui.form,
 		element = layui.element;
 		$ = layui.$;
-    	layer = parent.layer === undefined ? layui.layer : top.layer;
+   // layer = parent.layer === undefined ? layui.layer : top.layer;
+    layer = layui.layer;
 		tab = layui.bodyTab({
 			openTabNum : "50",  //最大可打开窗口数量
 			url : "json/navs.json" //获取菜单json地址

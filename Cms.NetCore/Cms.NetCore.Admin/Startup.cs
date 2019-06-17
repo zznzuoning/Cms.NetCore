@@ -42,7 +42,12 @@ namespace Cms.NetCore.Admin
             });
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().AddJsonOptions(options =>
+            {
+                //设置时间格式
+                options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+            }
+        ).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<CmsDBContext>(options =>
         options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("CustomerDBDatabase"), b => b.MigrationsAssembly("Cms.NetCore.Admin")));
             //使用AUTOFAC依赖注入

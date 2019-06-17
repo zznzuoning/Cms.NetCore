@@ -7,56 +7,48 @@
 
         laytpl = layui.laytpl,
         table = layui.table;
-
+    
     //用户列表
     var tableIns = table.render({
-        elem: '#userList',
-        url: '/UserManager/GetList',
+        elem: '#roleList',
+        url: '/Role/GetList',
         cellMinWidth: 95,
-        toolbar: "#userListBar",
+        toolbar: "#roleListBar",
         page: true,
         height: "full-125",
         limits: [10, 15, 20, 25],
         limit: 20,
-        id: "userListTable",
+        id: "roleListTable",
         cols: [[
             { type: "radio", fixed: "left", width: 50 },
-            { type: "numbers", fixed: "left", width: 50 },
             { field: 'id', title: 'Id', fixed: "left", hide: true },
-            //{ field: 'sid', width:10, align: "center" },
-            { field: 'userName', title: '用户名', width: 100, align: "center" },
+            { field: 'sid',  fixed: "left", width:10, align: "center" },
+            { field: 'roleName', title: '用户名', width: 100, align: "center" },
             {
-                field: 'email', title: '用户邮箱', width: 200, align: 'center', templet: function (d) {
-                    return '<a class="layui-blue" href="mailto:' + d.email + '">' + d.email + '</a>';
+                field: 'isDefault', title: '是否默认', width: 100, align: 'center', templet: function (d) {
+                    return d.isDefault ? "是" : "否";
                 }
             },
-            { field: 'mobilephone', title: '手机号', width: 150, align: "center" },
-            {
-                field: 'isEnabled', title: '用户状态', width: 100, align: 'center', templet: function (d) {
-                    return !d.isEnabled ? "正常使用" : "限制使用";
-                }
-            },
-            { field: 'createUser', title: '创建人', align: 'center', width: 100 },
-            { field: 'createTime', title: '创建时间', align: 'center', minWidth: 150 }
+            { field: 'updateUser', title: '最后更新人', align: 'center', minWidth: 100 },
+            { field: 'updateTime', title: '最后更新时间', align: 'center', minWidth: 150 },
+            { field: 'remarks', title: '说明', minWidth: 150, align: "center" },
         ]]
     });
-
     //搜索【此功能需要后台配合，所以暂时没有动态效果演示】
     $(".search_btn").on("click", function () {
-        table.reload("userListTable", {
+        table.reload("roleListTable", {
             page: {
                 curr: 1 //重新从第 1 页开始
             },
             where: {
-                Name: $(".searchName").val(),  //搜索的关键字
-                IsEnabled: $("#searchIsEnabled").val()  //搜索的关键字
+                Name: $(".searchName").val()
             }
         })
 
     });
 
     //添加用户
-    function addorUpdateUser(obj, data) {
+    function addorUpdateRole(obj, data) {
         var index;
         var title = "添加用户"
         if (obj.event == "edit") {
@@ -71,28 +63,29 @@
             title = "修改用户";
             $.ajax({
                 type: 'GET',
-                url: '/UserManager/GetUserById?id=' + data[0].id,
+                url: '/Role/GetRoleById?id=' + data[0].id,
                 success: function (res) {//res为相应体,function为回调函数
 
                     if (res.code === 0) {
                         index = layer.open({
                             title: title,
                             type: 2,
-                            content: "/UserManager/CreateOrUpdate",
+                            content: "/Role/CreateOrUpdate",
                             success: function (layero, index) {
 
                                 var body = layui.layer.getChildFrame('body', index);
 
                                 body.find("#Id").val(res.data.id);
-                                body.find(".UserName").val(res.data.userName);
-                                body.find(".RealName").val(res.data.realName);
-                                body.find(".Mobilephone").val(res.data.mobilephone);
-                                body.find(".Email").val(res.data.email);
+                                body.find(".RoleName").val(res.data.roleName);
+                                if (res.data.isDefault) {
+                                    body.find("#IsDefault").prop("checked", "checked");
+                                }
+                               
                                 body.find(".Remarks").text(res.data.remarks);
                                 form.render();
 
                                 setTimeout(function () {
-                                    layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
+                                    layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
                                         tips: 3
                                     });
                                 }, 500)
@@ -116,10 +109,10 @@
             index = layer.open({
                 title: title,
                 type: 2,
-                content: "/UserManager/CreateOrUpdate",
+                content: "/Role/CreateOrUpdate",
                 success: function (layero, index) {
                     setTimeout(function () {
-                        layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
+                        layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
                             tips: 3
                         });
                     }, 500)
@@ -134,27 +127,17 @@
             layui.layer.full(window.sessionStorage.getItem("index"));
         })
     }
-    function UsableOrDelete(btn, event, data) {
-        var msgText,
-            usableText = "是否确定禁用此用户？",
-            btnText = "启用";
-        if (event === "usable") {
-            msgText = "请选择要禁用或启用的用户";
-            if (btn.text() == "启用") {
-                usableText = "是否确定启用此用户？",
-                    btnText = "禁用";
-            }
-        }
-        else {
-            msgText = "请选择要删除的用户";
-            usableText = "是否确定删除此用户";
-        }
+    function Delete(data) {
         if (data.length == 0) {
-            layer.alert(msgText, { icon: 5 });
+            layer.alert("请选择要删除的用户", { icon: 5 });
             return;
         }
-
-        layer.confirm(usableText, {
+        if (data[0].isDefault)
+        {
+            layer.alert("系统默认,禁止删除", { icon: 5 });
+            return;
+        }
+        layer.confirm("是否确定删除此用户", {
             icon: 3,
             title: '系统提示',
             cancel: function (index) {
@@ -164,13 +147,10 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/UserManager/SetIsEnableOrDelete',
-                data: { Id: data[0].id, IsDelete: event === "del" },
+                url: '/Role/Delete',
+                data: { id: data[0].id},
                 success: function (res) {//res为相应体,function为回调函数
                     if (res.code === 200) {
-                        if (event === "usable") {
-                            btn.text(btnText);
-                        }
                         tableIns.reload();
                         layer.close(index);
                     }
@@ -211,31 +191,20 @@
     })
 
     //列表操作
-    table.on('toolbar(userList)', function (obj) {
+    table.on('toolbar(roleList)', function (obj) {
 
-        var checkStatus = table.checkStatus("userListTable");
+        var checkStatus = table.checkStatus("roleListTable");
         var layEvent = obj.event;
         switch (obj.event) {
             case "add":
             case "edit":
-                addorUpdateUser(obj, checkStatus.data);
+                addorUpdateRole(obj, checkStatus.data);
                 break;
-            case "usable":
             case "del":
-                UsableOrDelete($(this), obj.event, checkStatus.data)
+                Delete(checkStatus.data)
                 break;
             default:
                 break;
         }
-    });
-    table.on('radio(userList)', function (obj) {
-        var btnText = "";
-        if (obj.data.isEnabled) {
-            btnText = "启用";
-        }
-        else {
-            btnText = "禁用";
-        }
-        $("#usable").text(btnText);
     });
 })

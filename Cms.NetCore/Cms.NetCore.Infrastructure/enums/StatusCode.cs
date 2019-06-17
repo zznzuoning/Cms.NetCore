@@ -18,6 +18,11 @@ namespace Cms.NetCore.Infrastructure.enums
         [Text("请求成功,但处理未完成")]
         Accepted = 202,
         /// <summary>
+        /// 系统默认参数禁止删除
+        /// </summary>
+        [Text("系统默认参数禁止删除")]
+        IsDefault = 203,
+        /// <summary>
         /// 内部请求出错
         /// </summary>
         [Text("内部请求出错")]
