@@ -14,7 +14,7 @@ namespace Cms.NetCore.Models
         /// <summary>
         /// 父级Id
         /// </summary>
-        public Guid? ParentID { get; set; }
+        public Guid? ParentId { get; set; }
         /// <summary>
         /// 菜单名称
         /// </summary>
@@ -39,7 +39,7 @@ namespace Cms.NetCore.Models
         /// 父类菜单
         /// </summary>
         public virtual Menu ParentMenu { get; set; }
-        public virtual ICollection<Menu> ParentMenus { get; set; }
+        public virtual ICollection<Menu> ChildrenMenus { get; set; }
         public virtual ICollection<MenuButton> MenuButtons { get; set; }
     }
 }

@@ -9,69 +9,59 @@ using Cms.NetCore.Infrastructure.Specifications;
 using Cms.NetCore.IServices;
 using Cms.NetCore.Models;
 using Cms.NetCore.ViewModels;
-using Cms.NetCore.ViewModels.param.Role;
-using Cms.NetCore.ViewModels.Results.Role;
+using Cms.NetCore.ViewModels.param.Button;
+using Cms.NetCore.ViewModels.Results.Button;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cms.NetCore.Admin.Controllers
 {
-    public class RoleController : Controller
+    public class ButtonController : Controller
     {
-        private readonly IRoleServices _roleServices;
-        public RoleController(IRoleServices roleServices)
+        private readonly IButtionServices _buttionServices;
+        public ButtonController(IButtionServices buttionServices)
         {
-            _roleServices = roleServices;
+            _buttionServices = buttionServices;
         }
 
         public IActionResult Index()
         {
             return View();
         }
+
         /// <summary>
-        /// 获取所有角色数据
+        /// 获取所有按钮数据
         /// </summary>
-        /// <param name="roleSerach">查询条件</param>
+        /// <param name="buttonSerach">查询条件</param>
         /// <returns></returns>
-        public async Task<IActionResult> GetList([FromQuery]RoleSerach roleSerach)
+        public async Task<IActionResult> GetList([FromQuery] ButtonSerach buttonSerach)
         {
-            if (!string.IsNullOrWhiteSpace(roleSerach.Name))
+            if (!string.IsNullOrWhiteSpace(buttonSerach.Name))
             {
-                LinqComm<Role>.And(d => d.Name.Contains(roleSerach.Name));
+                LinqComm<Buttion>.And(d => d.Name.Contains(buttonSerach.Name));
             }
-            var getResult = await _roleServices.GetListPagedAsync(Specification<Role>.Eval(LinqComm<Role>.GetExpression()), d => d.Sid, SortOrder.Descending, roleSerach.Page, roleSerach.Limit);
-            var roleList = getResult.data.Select(d => new RoleList
+            var result = await _buttionServices.GetListPagedAsync(Specification<Buttion>.Eval(LinqComm<Buttion>.GetExpression()), d => d.Sort, SortOrder.Ascending, buttonSerach.Page, buttonSerach.Limit);
+            var data = result.data.Select(d => new ButtonList
             {
                 Id = d.Id,
-                RoleName = d.Name,
                 Sid = d.Sid,
-                Remarks = d.Remarks,
+                Name = d.Name,
+                Code = d.Code,
+                Sort = d.Sort,
                 UpdateTime = d.UpdateTime,
-                UpdateUser = d.UpdateUser?.RealName,
-                IsDefault=d.IsDefault
+                UpdateUser = d.UpdateUser == null ? "" : d.CreateUser.RealName,
+                Description = d.Description
             }).ToList();
-
-            return Json(new PageResult<RoleList>
-            {
-                code = getResult.code,
-                msg = getResult.msg,
-                count = getResult.count,
-                data = roleList
-            });
-        }
-
-        public IActionResult CreateOrUpdate()
-        {
-            return View();
+            return Json(new PageResult<ButtonList> { code = result.code, msg = result.msg, data = data, count = result.count });
         }
 
         /// <summary>
-        /// 根据id获取角色信息
+        /// 根据id获取按钮信息
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task<IActionResult> GetRoleById([FromQuery]string id)
+        public async Task<IActionResult> GetButtonById([FromQuery]string id)
         {
-            var result = new DataResult<RoleModel>();
+            var result = new DataResult<ButtonModel>();
             Guid gid;
             if (!Guid.TryParse(id, out gid))
             {
@@ -79,50 +69,56 @@ namespace Cms.NetCore.Admin.Controllers
                 result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
                 return Json(result);
             }
-            var getResult = await _roleServices.GetAsync(gid);
+            var getResult = await _buttionServices.GetAsync(gid);
 
             if (getResult.data != null)
             {
-                var role = new RoleModel();
-
-                role.Id = getResult.data.Id;
-                role.RoleName = getResult.data.Name;
-                role.Remarks = getResult.data.Remarks;
-                role.IsDefault = getResult.data.IsDefault;
-
-                result.data = role;
+                var button = new ButtonModel();
+                button.Id = getResult.data.Id;
+                button.Name = getResult.data.Name;
+                button.Code = getResult.data.Code;
+                button.Icon = getResult.data.Icon;
+                button.Sort = getResult.data.Sort;
+                button.Description = getResult.data.Description;
+                result.data = button;
                 result.code = getResult.code;
                 result.msg = getResult.msg;
             }
             return Json(result);
         }
+        public IActionResult CreateOrUpdate()
+        {
+            return View();
+        }
         /// <summary>
         /// 添加或修改
         /// </summary>
-        /// <param name="userAddOrUpdate"></param>
+        /// <param name="buttonAddOrUpdate"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> CreateOrUpdate([FromForm] RoleAddOrUpdate  roleAddOrUpdate)
+        public async Task<IActionResult> CreateOrUpdate([FromForm] ButtonAddOrUpdate buttonAddOrUpdate)
         {
             var result = new Result();
             Guid gid = Guid.Empty;
-            if (!string.IsNullOrWhiteSpace(roleAddOrUpdate.Id))
+            if (!string.IsNullOrWhiteSpace(buttonAddOrUpdate.Id))
             {
-                if (!Guid.TryParse(roleAddOrUpdate.Id, out gid))
+                if (!Guid.TryParse(buttonAddOrUpdate.Id, out gid))
                 {
                     result.code = (int)StatusCodeEnum.HttpMehtodError;
                     result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
                     return Json(result);
                 }
             }
-            var getResult = await _roleServices.GetAsync(gid);
-            var role = getResult.data ?? new Role();
-            role.Name = roleAddOrUpdate.RoleName;
-            role.Remarks = roleAddOrUpdate.Remarks;
-            role.IsDefault = roleAddOrUpdate.IsDefault;
-            if (role.Id == Guid.Empty)
+            var getResult = await _buttionServices.GetAsync(gid);
+            var button = getResult.data ?? new Buttion();
+            button.Name = buttonAddOrUpdate.Name;
+            button.Code = buttonAddOrUpdate.Code;
+            button.Icon = buttonAddOrUpdate.Icon;
+            button.Sort = buttonAddOrUpdate.Sort;
+            button.Description = buttonAddOrUpdate.Description;
+            if (button.Id == Guid.Empty)
             {
-                var insertResult = await _roleServices.InsertAsync(role);
+                var insertResult = await _buttionServices.InsertAsync(button);
                 if (insertResult.code != 0)
                 {
                     return Json(insertResult);
@@ -130,7 +126,7 @@ namespace Cms.NetCore.Admin.Controllers
             }
             else
             {
-                var updateResult = await _roleServices.UpdateAsync(role);
+                var updateResult = await _buttionServices.UpdateAsync(button);
                 if (updateResult.code != 0)
                 {
                     return Json(updateResult);
@@ -146,7 +142,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult>Delete([FromForm]string id)
+        public async Task<IActionResult> Delete([FromForm]string id)
         {
             var result = new Result
             {
@@ -160,21 +156,14 @@ namespace Cms.NetCore.Admin.Controllers
                 result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
                 return Json(result);
             }
-            var getResult = await _roleServices.GetAsync(gid);
+            var getResult = await _buttionServices.GetAsync(gid);
             if (getResult.code != 0)
             {
                 return Json(getResult);
             }
-            var role = getResult.data;
-            if (role.IsDefault)
-            {
-                result.code = (int)StatusCodeEnum.IsDefault;
-                result.msg = StatusCodeEnum.IsDefault.GetEnumText();
-                return Json(result);
-            }
-            role.IsDelete = true;
-            
-            var updateResult = await _roleServices.UpdateAsync(role);
+            var button = getResult.data;
+            button.IsDelete = true;
+            var updateResult = await _buttionServices.UpdateAsync(button);
             if (updateResult.code != 0)
             {
                 return Json(updateResult);

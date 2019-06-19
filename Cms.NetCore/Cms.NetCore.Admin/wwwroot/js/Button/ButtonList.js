@@ -7,36 +7,33 @@
 
         laytpl = layui.laytpl,
         table = layui.table;
-    
+
     //用户列表
     var tableIns = table.render({
-        elem: '#roleList',
-        url: '/Role/GetList',
+        elem: '#buttonList',
+        url: '/Button/GetList',
         cellMinWidth: 95,
-        toolbar: "#roleListBar",
+        toolbar: "#buttonListBar",
         page: true,
         height: "full-125",
         limits: [10, 15, 20, 25],
         limit: 20,
-        id: "roleListTable",
+        id: "buttonListTable",
         cols: [[
             { type: "radio", fixed: "left", width: 50 },
             { field: 'id', title: 'Id', fixed: "left", hide: true },
-            { field: 'sid',  fixed: "left", width:10, align: "center" },
-            { field: 'roleName', title: '用户名', width: 100, align: "center" },
-            {
-                field: 'isDefault', title: '是否默认', width: 100, align: 'center', templet: function (d) {
-                    return d.isDefault ? "是" : "否";
-                }
-            },
+            { field: 'sid', fixed: "left", width: 10, align: "center" },
+            { field: 'name', title: '按钮名', width: 100, align: "center" },
+            { field: 'code', title: '标识', width: 100, align: "center" },
+            { field: 'sort', title: '排序', width: 100, align: "center" },
             { field: 'updateUser', title: '最后更新人', align: 'center', minWidth: 100 },
             { field: 'updateTime', title: '最后更新时间', align: 'center', minWidth: 150 },
-            { field: 'remarks', title: '说明', minWidth: 150, align: "center" },
+            { field: 'description', title: '说明', minWidth: 150, align: "center" },
         ]]
     });
     //搜索【此功能需要后台配合，所以暂时没有动态效果演示】
     $(".search_btn").on("click", function () {
-        table.reload("roleListTable", {
+        table.reload("buttonListTable", {
             page: {
                 curr: 1 //重新从第 1 页开始
             },
@@ -47,44 +44,44 @@
 
     });
 
+    //添加用户
     function addorUpdateRole(obj, data) {
         var index;
-        var title = "添加角色"
+        var title = "添加按钮"
         if (obj.event == "edit") {
             if (data.length == 0) {
-                layer.alert("请选择要修改的角色", { icon: 5 });
+                layer.alert("请选择要修改的按钮", { icon: 5 });
                 return;
             }
             if (data.length > 1) {
                 layer.alert("不支持批量修改", { icon: 5 });
                 return;
             }
-            title = "修改角色";
+            title = "修改按钮";
             $.ajax({
                 type: 'GET',
-                url: '/Role/GetRoleById?id=' + data[0].id,
+                url: '/Button/GetButtonById?id=' + data[0].id,
                 success: function (res) {//res为相应体,function为回调函数
 
                     if (res.code === 0) {
                         index = layer.open({
                             title: title,
                             type: 2,
-                            content: "/Role/CreateOrUpdate",
+                            content: "/Button/CreateOrUpdate",
                             success: function (layero, index) {
 
                                 var body = layui.layer.getChildFrame('body', index);
 
                                 body.find("#Id").val(res.data.id);
-                                body.find(".RoleName").val(res.data.roleName);
-                                if (res.data.isDefault) {
-                                    body.find("#IsDefault").prop("checked", "checked");
-                                }
-                               
-                                body.find(".Remarks").text(res.data.remarks);
+                                body.find(".Name").val(res.data.name);
+                                body.find(".Description").text(res.data.description);
+                                body.find(".Sort").val(res.data.sort);
+                                body.find("#Icon").val(res.data.icon);
+                                body.find("#Code").val(res.data.code);
                                 form.render();
 
                                 setTimeout(function () {
-                                    layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
+                                    layui.layer.tips('点击此处返回按钮列表', '.layui-layer-setwin .layui-layer-close', {
                                         tips: 3
                                     });
                                 }, 500)
@@ -108,10 +105,10 @@
             index = layer.open({
                 title: title,
                 type: 2,
-                content: "/Role/CreateOrUpdate",
+                content: "/Button/CreateOrUpdate",
                 success: function (layero, index) {
                     setTimeout(function () {
-                        layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
+                        layui.layer.tips('点击此处返回按钮列表', '.layui-layer-setwin .layui-layer-close', {
                             tips: 3
                         });
                     }, 500)
@@ -128,15 +125,10 @@
     }
     function Delete(data) {
         if (data.length == 0) {
-            layer.alert("请选择要删除的用户", { icon: 5 });
+            layer.alert("请选择要删除的按钮", { icon: 5 });
             return;
         }
-        if (data[0].isDefault)
-        {
-            layer.alert("系统默认,禁止删除", { icon: 5 });
-            return;
-        }
-        layer.confirm("是否确定删除此角色", {
+        layer.confirm("是否确定删除此按钮", {
             icon: 3,
             title: '系统提示',
             cancel: function (index) {
@@ -146,8 +138,8 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/Role/Delete',
-                data: { id: data[0].id},
+                url: '/Button/Delete',
+                data: { id: data[0].id },
                 success: function (res) {//res为相应体,function为回调函数
                     if (res.code === 200) {
                         tableIns.reload();
@@ -190,9 +182,9 @@
     })
 
     //列表操作
-    table.on('toolbar(roleList)', function (obj) {
+    table.on('toolbar(buttonList)', function (obj) {
 
-        var checkStatus = table.checkStatus("roleListTable");
+        var checkStatus = table.checkStatus("buttonListTable");
         var layEvent = obj.event;
         switch (obj.event) {
             case "add":
