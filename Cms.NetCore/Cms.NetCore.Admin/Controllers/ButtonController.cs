@@ -37,9 +37,9 @@ namespace Cms.NetCore.Admin.Controllers
         {
             if (!string.IsNullOrWhiteSpace(buttonSerach.Name))
             {
-                LinqComm<Buttion>.And(d => d.Name.Contains(buttonSerach.Name));
+                LinqComm<Button>.And(d => d.Name.Contains(buttonSerach.Name));
             }
-            var result = await _buttionServices.GetListPagedAsync(Specification<Buttion>.Eval(LinqComm<Buttion>.GetExpression()), d => d.Sort, SortOrder.Ascending, buttonSerach.Page, buttonSerach.Limit);
+            var result = await _buttionServices.GetListPagedAsync(Specification<Button>.Eval(LinqComm<Button>.GetExpression()), d => d.Sort, SortOrder.Ascending, buttonSerach.Page, buttonSerach.Limit);
             var data = result.data.Select(d => new ButtonList
             {
                 Id = d.Id,
@@ -110,7 +110,7 @@ namespace Cms.NetCore.Admin.Controllers
                 }
             }
             var getResult = await _buttionServices.GetAsync(gid);
-            var button = getResult.data ?? new Buttion();
+            var button = getResult.data ?? new Button();
             button.Name = buttonAddOrUpdate.Name;
             button.Code = buttonAddOrUpdate.Code;
             button.Icon = buttonAddOrUpdate.Icon;

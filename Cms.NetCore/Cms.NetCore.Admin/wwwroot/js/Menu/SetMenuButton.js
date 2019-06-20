@@ -1,25 +1,28 @@
-﻿layui.use([ 'form', 'layer'], function () {
+﻿layui.use(['formSelects', 'form', 'layer'], function () {
     var form = layui.form,
         layer = parent.layer === undefined ? layui.layer : top.layer,
-        $ = layui.jquery;
-       
+        $ = layui.jquery,
+        formSelects = layui.formSelects;
 
+    formSelects.render('button', {
+        skin: "danger",                 //多选皮肤
+        radio: false,                   //是否设置为单选模式s
+        showCount: 0,           //多选的label数量, 0,负值,非数字则显示全部
+    });
    
-    form.on("submit(addUserManager)", function (data) {
+    //server
+    formSelects.data('button', 'server', {
+        url: '/Menu/GetButton?id=' +$("#MenuId").val()
+    });
+
+    form.on("submit(setMenuButton)", function (data) {
         //弹出loading
         var index = top.layer.msg('数据提交中，请稍候', { icon: 16, time: false, shade: 0.8 });
         //获取防伪标记
         $.ajax({
             type: 'POST',
-            url: '/UserManager/CreateOrUpdate/',
-            data: {
-                Id: $("#Id").val(),  //主键
-                UserName: $(".UserName").val(),
-                RealName: $(".RealName").val(),
-                Mobilephone: $(".Mobilephone").val(),
-                Email: $(".Email").val(),
-                Remarks: $(".Remarks").val()
-            },
+            url: '/Menu/SetMenuButton/',
+            data: data.field,
             dataType: "json",
             success: function (res) {//res为相应体,function为回调函数
                 var alertIndex;
@@ -42,7 +45,7 @@
         });
         setTimeout(function () {
             top.layer.close(index);
-            top.layer.msg("用户添加成功！");
+            top.layer.msg("分配成功！");
             layer.closeAll("iframe");
             //刷新父页面
             parent.location.reload();

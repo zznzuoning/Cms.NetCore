@@ -50,37 +50,38 @@
 
     });
 
-    //添加用户
+
     function addorUpdateRole(obj, data) {
         var index;
-        var title = "添加按钮"
+        var title = "添加菜单"
         if (obj.event == "edit") {
             if (data.length == 0) {
-                layer.alert("请选择要修改的按钮", { icon: 5 });
+                layer.alert("请选择要修改的菜单", { icon: 5 });
                 return;
             }
             if (data.length > 1) {
                 layer.alert("不支持批量修改", { icon: 5 });
                 return;
             }
-            title = "修改按钮";
+            title = "修改菜单";
             $.ajax({
                 type: 'GET',
-                url: '/Button/GetButtonById?id=' + data[0].id,
+                url: '/Menu/GetMenuById?id=' + data[0].id,
                 success: function (res) {//res为相应体,function为回调函数
 
                     if (res.code === 0) {
                         index = layer.open({
                             title: title,
                             type: 2,
-                            content: "/Button/CreateOrUpdate",
+                            content: "/Menu/CreateOrUpdate",
                             success: function (layero, index) {
 
                                 var body = layui.layer.getChildFrame('body', index);
 
                                 body.find("#Id").val(res.data.id);
-                                body.find(".Name").val(res.data.name);
-                                body.find(".Description").text(res.data.description);
+                                body.find(".MenuName").val(res.data.menuName);
+                                body.find(".Url").val(res.data.url);
+                                body.find("#ParentId").val(res.data.parentId);
                                 body.find(".Sort").val(res.data.sort);
                                 body.find("#Icon").val(res.data.icon);
                                 body.find("#Code").val(res.data.code);
@@ -111,10 +112,10 @@
             index = layer.open({
                 title: title,
                 type: 2,
-                content: "/Button/CreateOrUpdate",
+                content: "/Menu/CreateOrUpdate",
                 success: function (layero, index) {
                     setTimeout(function () {
-                        layui.layer.tips('点击此处返回按钮列表', '.layui-layer-setwin .layui-layer-close', {
+                        layui.layer.tips('点击此处返回菜单列表', '.layui-layer-setwin .layui-layer-close', {
                             tips: 3
                         });
                     }, 500)
@@ -168,6 +169,43 @@
             layer.close(index);
         });
     }
+    function SetButton(data) {
+        if (data.length == 0) {
+            layer.alert("请选择要分配的菜单", { icon: 5 });
+            return;
+        }
+        if (data[0].isHasChildren) {
+            layer.alert("顶级节点禁止分配按钮", { icon: 5 });
+            return;
+        }
+        var index = layer.open({
+            title: "分配按钮",
+            type: 2,
+            content: "/Menu/SetMenuButton",
+            success: function (layero, index) {
+
+                var body = layui.layer.getChildFrame('body', index);
+
+                body.find("#MenuId").val(data[0].id);
+                body.find(".MenuName").val(data[0].menuName);
+                form.render();
+                setTimeout(function () {
+                    layui.layer.tips('点击此处返回菜单列表', '.layui-layer-setwin .layui-layer-close', {
+                        tips: 3
+                    });
+                }, 500)
+
+
+            }
+        })
+        layer.full(index);
+
+        window.sessionStorage.setItem("index", index);
+        //改变窗口大小时，重置弹窗的宽高，防止超出可视区域（如F12调出debug的操作）
+        $(window).on("resize", function () {
+            layui.layer.full(window.sessionStorage.getItem("index"));
+        })
+    }
 
     //批量删除
     $(".delAll_btn").click(function () {
@@ -203,6 +241,9 @@
                 break;
             case "del":
                 Delete(checkStatus.data)
+                break;
+            case "setButton":
+                SetButton(checkStatus.data)
                 break;
             default:
                 break;

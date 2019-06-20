@@ -15,6 +15,6 @@ namespace Cms.NetCore.Models
         public Guid MenuId { get; set; }
         public Guid ButtonId { get; set; }
         public virtual Menu Menu { get; set; }
-        public virtual Buttion Buttion { get; set; }
+        public virtual Button Button { get; set; }
     }
 }

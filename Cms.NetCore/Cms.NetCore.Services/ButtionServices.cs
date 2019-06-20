@@ -7,9 +7,9 @@ using System.Text;
 
 namespace Cms.NetCore.Services
 {
-    public class ButtionServices : ApplicationServices<Buttion>, IButtionServices
+    public class ButtionServices : ApplicationServices<Button>, IButtionServices
     {
-        public ButtionServices(IBaseRepository<Buttion> baseRepository) : base(baseRepository)
+        public ButtionServices(IBaseRepository<Button> baseRepository) : base(baseRepository)
         {
         }
     }

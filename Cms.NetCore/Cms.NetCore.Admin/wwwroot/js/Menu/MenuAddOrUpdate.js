@@ -1,25 +1,44 @@
-﻿layui.use([ 'form', 'layer'], function () {
+﻿layui.use(['treeSelect','form', 'layer'], function () {
     var form = layui.form,
         layer = parent.layer === undefined ? layui.layer : top.layer,
-        $ = layui.jquery;
-       
-
-   
-    form.on("submit(addUserManager)", function (data) {
+        $ = layui.jquery,
+        treeSelect = layui.treeSelect;
+    treeSelect.render({
+        // 选择器
+        elem: '#tree',
+        // 数据
+        data: '/Menu/GetTreeList',
+        style: {
+            folder: { // 父节点图标
+                enable: true // 是否开启：true/false
+            },
+            line: { // 连接线
+                enable: true // 是否开启：true/false
+            }
+        },
+        // 异步加载方式：get/post，默认get
+        type: 'get',
+        // 占位符
+        placeholder: '请选择父级菜单',
+        // 是否开启搜索功能：true/false，默认false
+        search: true,
+        // 点击回调
+        click: function (d) {
+            $("#ParentId").val(d.current.id);
+        },
+        // 加载完成后的回调函数
+        success: function (d) {
+            treeSelect.checkNode('tree', $("#ParentId").val()); 
+        }
+    });
+    form.on("submit(addMenu)", function (data) {
         //弹出loading
         var index = top.layer.msg('数据提交中，请稍候', { icon: 16, time: false, shade: 0.8 });
         //获取防伪标记
         $.ajax({
             type: 'POST',
-            url: '/UserManager/CreateOrUpdate/',
-            data: {
-                Id: $("#Id").val(),  //主键
-                UserName: $(".UserName").val(),
-                RealName: $(".RealName").val(),
-                Mobilephone: $(".Mobilephone").val(),
-                Email: $(".Email").val(),
-                Remarks: $(".Remarks").val()
-            },
+            url: '/Menu/CreateOrUpdate/',
+            data: data.field,
             dataType: "json",
             success: function (res) {//res为相应体,function为回调函数
                 var alertIndex;
@@ -42,7 +61,7 @@
         });
         setTimeout(function () {
             top.layer.close(index);
-            top.layer.msg("用户添加成功！");
+            top.layer.msg("菜单添加成功！");
             layer.closeAll("iframe");
             //刷新父页面
             parent.location.reload();

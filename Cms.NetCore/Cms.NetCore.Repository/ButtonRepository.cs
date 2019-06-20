@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Cms.NetCore.Repository
 {
-    public class ButtonRepository : EntityFrameworkRepository<Buttion>, IButtonRepository
+    public class ButtonRepository : EntityFrameworkRepository<Button>, IButtonRepository
     {
         public ButtonRepository(IEntityFrameworkRepositoryContext Context) : base(Context)
         {

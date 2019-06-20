@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Cms.NetCore.ViewModels.Results.Menu
+namespace Cms.NetCore.ViewModels.param.Menu
 {
-    public class MenuList : BaseResult
+   public  class MenuAddOrUpdate
     {
-        public bool IsHasChildren { get; set; }
+        public string Id { get; set; }
         public string MenuName { get; set; }
-        public string ParentMenuName { get; set; }
         public string Code { get; set; }
+        public string ParentId { get; set; }
         public string Url { get; set; }
         public string Icon { get; set; }
         public int Sort { get; set; }
-        public string UpdateUser { get; set; }
-        public DateTime UpdateTime { get; set; }
     }
 }

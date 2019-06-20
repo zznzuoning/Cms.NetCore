@@ -8,7 +8,7 @@ namespace Cms.NetCore.Models
     /// <summary>
     /// 按钮表
     /// </summary>
-    public class Buttion : BaseModel
+    public class Button : BaseModel
     {
         /// <summary>
         /// 名称

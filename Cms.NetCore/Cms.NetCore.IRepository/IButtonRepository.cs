@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Cms.NetCore.IRepository
 {
-    public interface IButtonRepository : IBaseRepository<Buttion>
+    public interface IButtonRepository : IBaseRepository<Button>
     {
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Cms.NetCore.IServices
 {
-    public interface IButtionServices : IApplicationServices<Buttion>
+    public interface IButtionServices : IApplicationServices<Button>
     {
     }
 }
