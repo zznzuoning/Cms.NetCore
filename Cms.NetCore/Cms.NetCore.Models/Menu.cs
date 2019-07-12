@@ -9,12 +9,8 @@ namespace Cms.NetCore.Models
     /// <summary>
     /// 菜单表
     /// </summary>
-    public class Menu : BaseModel
+    public class Menu : BaseMenu
     {
-        /// <summary>
-        /// 父级Id
-        /// </summary>
-        public Guid? ParentId { get; set; }
         /// <summary>
         /// 菜单名称
         /// </summary>

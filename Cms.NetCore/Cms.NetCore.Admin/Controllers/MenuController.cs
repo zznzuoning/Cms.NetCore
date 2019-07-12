@@ -53,7 +53,7 @@ namespace Cms.NetCore.Admin.Controllers
                 UpdateTime = d.UpdateTime,
                 UpdateUser = d.UpdateUser?.RealName,
                 Sort = d.Sort,
-                IsHasChildren=d.ChildrenMenus.Any()
+                IsHasChildren = d.ChildrenMenus.Any()
             }).ToList();
 
             return Json(new PageResult<MenuList>
@@ -167,14 +167,23 @@ namespace Cms.NetCore.Admin.Controllers
             var getResult = await _menuServices.GetListAsync(Specification<Menu>.Eval(d => !d.IsDelete));
             var menuList = getResult.data;
             var topMenu = menuList.Where(d => d.ParentId == null).ToList();
-            var treeList = new List<Tree>();
+            var treeList = new List<SelectTree>();
+            //foreach (var menu in topMenu)
+            //{
+            //    var tree = new Tree();
+            //    tree.Id = menu.Id;
+            //    tree.Name = menu.Name;
+            //    tree.Open = true;
+            //    tree.Children = GetChildren(menuList,menu.Id);
+            //    treeList.Add(tree);
+            //}
             foreach (var menu in topMenu)
             {
-                var tree = new Tree();
+                var tree = new SelectTree();
                 tree.Id = menu.Id;
                 tree.Name = menu.Name;
                 tree.Open = true;
-                tree.Children = GetChildren(menuList,menu.Id);
+                tree.Children = GetChildrens(menuList, menu.Id);
                 treeList.Add(tree);
             }
             return Json(treeList);
@@ -185,16 +194,47 @@ namespace Cms.NetCore.Admin.Controllers
         /// <param name="menuList"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        private List<Tree> GetChildren(List<Menu> menuList,Guid id)
+        private List<SelectTree> GetChildren(List<Menu> menuList, Guid id)
         {
-            var treeList = new List<Tree>();
+            var treeList = new List<SelectTree>();
             var menus = menuList.Where(d => d.ParentId == id);
             foreach (var menu in menus)
             {
-                var tree = new Tree();
+                var tree = new SelectTree();
                 tree.Id = menu.Id;
                 tree.Name = menu.Name;
                 tree.Children = GetChildren(menuList, menu.Id);
+                treeList.Add(tree);
+            }
+            return treeList;
+        }
+        private List<SelectTree> GetChildrens<T>(List<T> menuList, Guid id) where T : BaseMenu
+        {
+
+            var treeList = new List<SelectTree>();
+            var menus = menuList.Where(d => d.ParentId == id);
+            foreach (var menu in menus)
+            {
+                var tree = new SelectTree();
+                var menutype = menu.GetType().GetProperties();
+                foreach (var items in tree.GetType().GetProperties())
+                {
+                    foreach (var item in menutype)
+                    {
+                        if (item.Name == items.Name)
+                        {
+                            items.SetValue(tree, item.GetValue(menu));
+                            break;
+                        }
+
+                    }
+                }
+                tree.Children = GetChildrens(menuList, menu.Id);
+
+
+
+
+
                 treeList.Add(tree);
             }
             return treeList;
@@ -294,7 +334,7 @@ namespace Cms.NetCore.Admin.Controllers
                 return Json(result);
             }
             var getResult = await _menuServices.GetButtonByMenuIdAsync(mid);
-            if(getResult.code!=0)
+            if (getResult.code != 0)
             {
                 return Json(getResult);
             }
@@ -339,11 +379,12 @@ namespace Cms.NetCore.Admin.Controllers
         /// <returns></returns>
         public async Task<IActionResult> GetButton(Guid id)
         {
-            var getResult=await _buttionServices.GetListAsync(Specification<Button>.Eval(d=>!d.IsDelete));
-            var buttons = getResult.data.Select(d=>new Select {
-                value=d.Id.ToString(),
-                Name=d.Name,
-                selected=d.MenuButtons.Any(x=>x.ButtonId==d.Id&&x.MenuId==id)
+            var getResult = await _buttionServices.GetListAsync(Specification<Button>.Eval(d => !d.IsDelete));
+            var buttons = getResult.data.Select(d => new Select
+            {
+                value = d.Id.ToString(),
+                Name = d.Name,
+                selected = d.MenuButtons.Any(x => x.ButtonId == d.Id && x.MenuId == id)
             }).ToList();
             return Json(buttons);
         }

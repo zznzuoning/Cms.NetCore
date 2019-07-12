@@ -21,13 +21,14 @@ namespace Cms.NetCore.Infrastructure.Comm
         }
         public  static Expression<Func<T, bool>> GetExpression()
         {
-            Task.Run(()=> { }).ContinueWith(ClearExpression);
+
+             Task.Run(()=> { expression = d => !d.IsDelete; });
             return expression;
         }
 
         private static void ClearExpression(Task arg1)
         {
-            expression = d => !d.IsDelete;
+           
         }
     }
 }

@@ -138,7 +138,8 @@ layui.use(['bodyTab','form','element','layer','jquery'],function(){
 })
 
 //打开新窗口
-function addTab(_this){
+function addTab(_this) {
+    console.log(_this);
 	tab.tabAdd(_this);
 }
 

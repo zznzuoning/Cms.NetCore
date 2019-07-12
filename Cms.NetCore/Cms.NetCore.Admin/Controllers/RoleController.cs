@@ -181,5 +181,77 @@ namespace Cms.NetCore.Admin.Controllers
             }
             return Json(result);
         }
+
+        /// <summary>
+        /// 角色授权
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult RoleMenu()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 角色授权
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<IActionResult> RoleMenu([FromForm]string id,List<MenuButtonAttributes> menuButtonAttributes)
+        {
+            var result = new Result
+            {
+                code = (int)StatusCodeEnum.Success,
+                msg = StatusCodeEnum.Success.GetEnumText()
+            };
+            Guid gid;
+            if (!Guid.TryParse(id, out gid))
+            {
+                result.code = (int)StatusCodeEnum.HttpMehtodError;
+                result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
+                return Json(result);
+            }
+            var getRoleResult = await _roleServices.GetAsync(gid);
+            if (getRoleResult.data == null)
+            {
+                result.code = (int)StatusCodeEnum.Unauthorized;
+                result.msg = StatusCodeEnum.Unauthorized.GetEnumText();
+                return Json(result);
+            }
+            var getAuthorizeResult = await _roleServices.AuthorizeAsync(new RoleMenuPara { RoleId= gid ,MenuButtonIds= menuButtonAttributes });
+            if (getAuthorizeResult.code != 0)
+            {
+                return Json(getAuthorizeResult);
+            }
+            return Json(result);
+        }
+        /// <summary>
+        /// 根据id获取所有菜单和按钮
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> GetAllMenuButtonByRoleId([FromQuery]string id)
+        {
+            var result = new ListResult<Tree>();
+            Guid gid;
+            if (!Guid.TryParse(id, out gid))
+            {
+                result.code = (int)StatusCodeEnum.HttpMehtodError;
+                result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
+                return Json(result);
+            }
+            var getRoleResult = await _roleServices.GetAsync(gid);
+            if (getRoleResult.data == null)
+            {
+                result.code = (int)StatusCodeEnum.Unauthorized;
+                result.msg = StatusCodeEnum.Unauthorized.GetEnumText();
+                return Json(result);
+            }
+            var getMenuButtonResult = await _roleServices.GetAllMenuButtonByRoleIdAsync(gid);
+            if (getMenuButtonResult.code != 0)
+            {
+                return Json(getMenuButtonResult);
+            }
+            result.data = getMenuButtonResult.data;
+            return Json(result);
+        }
     }
 }

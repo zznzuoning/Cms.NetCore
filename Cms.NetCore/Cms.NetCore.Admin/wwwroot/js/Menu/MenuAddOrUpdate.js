@@ -1,4 +1,4 @@
-﻿layui.use(['treeSelect','form', 'layer'], function () {
+﻿layui.use(['treeSelect', 'form', 'layer'], function () {
     var form = layui.form,
         layer = parent.layer === undefined ? layui.layer : top.layer,
         $ = layui.jquery,
@@ -8,27 +8,30 @@
         elem: '#tree',
         // 数据
         data: '/Menu/GetTreeList',
-        style: {
-            folder: { // 父节点图标
-                enable: true // 是否开启：true/false
-            },
-            line: { // 连接线
-                enable: true // 是否开启：true/false
-            }
-        },
+       
         // 异步加载方式：get/post，默认get
         type: 'get',
         // 占位符
         placeholder: '请选择父级菜单',
         // 是否开启搜索功能：true/false，默认false
-        search: true,
+        style: {
+            folder: { // 父节点图标
+                enable: false // 是否开启：true/false
+            },
+            line: { // 连接线
+                enable: true // 是否开启：true/false
+            }
+        },
         // 点击回调
         click: function (d) {
             $("#ParentId").val(d.current.id);
         },
         // 加载完成后的回调函数
         success: function (d) {
-            treeSelect.checkNode('tree', $("#ParentId").val()); 
+           
+            if ($("#ParentId").val() != "") {
+                treeSelect.checkNode('tree', $("#ParentId").val());
+            }
         }
     });
     form.on("submit(addMenu)", function (data) {

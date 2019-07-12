@@ -4,12 +4,43 @@ using System.Text;
 
 namespace Cms.NetCore.ViewModels
 {
-    public class Tree
+    public class Tree:BaseTree
+    {
+        /// 子节点
+        /// </summary>
+        public List<MenuTree> Children { get; set; }
+    }
+    public class MenuTree: BaseTree
+    {
+        /// 子节点
+        /// </summary>
+        public List<ButtonTree> Children { get; set; }
+    }
+    public class ButtonTree : BaseTree
+    {
+        /// <summary>
+        /// 节点是否初始为选中状态
+        /// </summary>
+        public bool Checked { get; set; }
+    }
+    public class BaseTree
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public bool Open { get; set; }
-        public bool @Checked { get; set; }
-        public List<Tree> Children { get; set; }
+        /// <summary>
+        /// 节点标题
+        /// </summary>
+        public string Title { get; set; }
+        /// <summary>
+        /// 节点是否初始展开
+        /// </summary>
+        public bool Spread { get; set; }
+        /// <summary>
+        /// 自定义属性
+        /// </summary>
+        public MenuButtonAttributes Attributes { get; set; }
+    }
+    public class MenuButtonAttributes
+    {
+        public Guid? MenuButtonId { get; set; }
     }
 }

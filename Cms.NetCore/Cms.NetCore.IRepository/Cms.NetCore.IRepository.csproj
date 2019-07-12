@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Cms.NetCore.Infrastructure\Cms.NetCore.Infrastructure.csproj" />
     <ProjectReference Include="..\Cms.NetCore.Models\Cms.NetCore.Models.csproj" />
+    <ProjectReference Include="..\Cms.NetCore.ViewModels\Cms.NetCore.ViewModels.csproj" />
   </ItemGroup>
 
 </Project>

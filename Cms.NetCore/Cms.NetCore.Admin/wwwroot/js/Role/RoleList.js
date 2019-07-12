@@ -1,13 +1,13 @@
-﻿layui.use(['form', 'jquery', 'layer', 'table', 'laytpl'], function () {
+﻿layui.use(['form', 'jquery', 'layer','tree','table', 'laytpl'], function () {
     var form = layui.form,
 
         //layer = parent.layer === undefined ? layui.layer : top.layer,
         $ = layui.jquery,
         layer = layui.layer,
-
+        tree = layui.tree,
         laytpl = layui.laytpl,
         table = layui.table;
-    
+
     //用户列表
     var tableIns = table.render({
         elem: '#roleList',
@@ -22,7 +22,7 @@
         cols: [[
             { type: "radio", fixed: "left", width: 50 },
             { field: 'id', title: 'Id', fixed: "left", hide: true },
-            { field: 'sid',  fixed: "left", width:10, align: "center" },
+            { field: 'sid', fixed: "left", width: 10, align: "center" },
             { field: 'roleName', title: '用户名', width: 100, align: "center" },
             {
                 field: 'isDefault', title: '是否默认', width: 100, align: 'center', templet: function (d) {
@@ -79,7 +79,7 @@
                                 if (res.data.isDefault) {
                                     body.find("#IsDefault").prop("checked", "checked");
                                 }
-                               
+
                                 body.find(".Remarks").text(res.data.remarks);
                                 form.render();
 
@@ -131,8 +131,7 @@
             layer.alert("请选择要删除的用户", { icon: 5 });
             return;
         }
-        if (data[0].isDefault)
-        {
+        if (data[0].isDefault) {
             layer.alert("系统默认,禁止删除", { icon: 5 });
             return;
         }
@@ -147,7 +146,7 @@
             $.ajax({
                 type: 'POST',
                 url: '/Role/Delete',
-                data: { id: data[0].id},
+                data: { id: data[0].id },
                 success: function (res) {//res为相应体,function为回调函数
                     if (res.code === 200) {
                         tableIns.reload();
@@ -166,7 +165,30 @@
             layer.close(index);
         });
     }
+    function roleMenu(data) {
+        if (data.length == 0) {
+            layer.alert("请选择要授权的角色", { icon: 5 });
+            return;
+        }
+        var index = layer.open({
+            title: "角色授权:" + data[0].roleName,
+            type: 2,
+            content: "/Role/RoleMenu",
+            success: function (layero, index) {
+                var body = layui.layer.getChildFrame('body', index);
 
+                body.find("#Id").val(data[0].id);
+                setTimeout(function () {
+                    layui.layer.tips('点击此处返回角色列表', '.layui-layer-setwin .layui-layer-close', {
+                        tips: 3
+                    });
+                }, 500)
+
+
+            }
+        })
+        layer.full(index);
+    }
     //批量删除
     $(".delAll_btn").click(function () {
         var checkStatus = table.checkStatus('userListTable'),
@@ -202,6 +224,8 @@
             case "del":
                 Delete(checkStatus.data)
                 break;
+            case "roleMenu":
+                roleMenu(checkStatus.data)
             default:
                 break;
         }
