@@ -53,7 +53,7 @@ namespace Cms.NetCore.Admin.Controllers
                 UpdateTime = d.UpdateTime,
                 UpdateUser = d.UpdateUser?.RealName,
                 Sort = d.Sort,
-                IsHasChildren = d.ChildrenMenus.Any()
+                IsHasChildren = d.ChildrenMenus.Any(x=>!x.IsDelete)
             }).ToList();
 
             return Json(new PageResult<MenuList>
