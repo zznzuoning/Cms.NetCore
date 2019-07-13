@@ -20,10 +20,11 @@ namespace Cms.NetCore.Admin.Controllers
     public class UserManagerController : BaseController
     {
         private readonly IUserManagerServices _userManagerServices;
-
-        public UserManagerController(IUserManagerServices userManagerServices)
+        private readonly IRoleServices _roleServices;
+        public UserManagerController(IUserManagerServices userManagerServices,IRoleServices roleServices)
         {
             _userManagerServices = userManagerServices;
+            _roleServices = roleServices;
 
         }
 
@@ -208,6 +209,55 @@ namespace Cms.NetCore.Admin.Controllers
             }
             return Json(result);
         }
-      
+
+        public IActionResult SetRole()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SetRole([FromForm]SetRolePara setRolePara)
+        {
+
+            var result = new Result
+            {
+                code = (int)StatusCodeEnum.Success,
+                msg = StatusCodeEnum.Success.GetEnumText()
+            };
+            Guid gid = Guid.Empty;
+            if (!Guid.TryParse(setRolePara.Id, out gid))
+            {
+                result.code = (int)StatusCodeEnum.HttpMehtodError;
+                result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
+                return Json(result);
+            }
+            if (string.IsNullOrWhiteSpace(setRolePara.RoleIds))
+            {
+                result.code = (int)StatusCodeEnum.HttpMehtodError;
+                result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
+                return Json(result);
+            }
+            var setResult = await _userManagerServices.SetRoleAsync(setRolePara);
+            if (setResult.code != 0)
+            {
+                return Json(setResult);
+            }
+            return Json(result);
+        }
+        /// <summary>
+        /// 获取所有按钮
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> GetRole(Guid id)
+        {
+            var getResult = await _roleServices.GetListAsync(Specification<Role>.Eval(d => !d.IsDelete));
+            var roles = getResult.data.Select(d => new Select
+            {
+                value = d.Id.ToString(),
+                Name = d.Name,
+                selected = d.UserRoles.Any(x => x.RoleId == d.Id && x.UserManagerId == id)
+            }).ToList();
+            return Json(roles);
+        }
+
     }
 }

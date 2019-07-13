@@ -209,7 +209,39 @@
             layer.msg("请选择需要删除的用户");
         }
     })
+    function SetRole(data) {
+        if (data.length == 0) {
+            layer.alert("请选择要设置的用户", { icon: 5 });
+            return;
+        }
+        var index = layer.open({
+            title: "设置角色",
+            type: 2,
+            content: "/UserManager/SetRole",
+            success: function (layero, index) {
 
+                var body = layui.layer.getChildFrame('body', index);
+
+                body.find("#Id").val(data[0].id);
+                body.find(".UserName").val(data[0].userName);
+                form.render();
+                setTimeout(function () {
+                    layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
+                        tips: 3
+                    });
+                }, 500)
+
+
+            }
+        })
+        layer.full(index);
+
+        window.sessionStorage.setItem("index", index);
+        //改变窗口大小时，重置弹窗的宽高，防止超出可视区域（如F12调出debug的操作）
+        $(window).on("resize", function () {
+            layui.layer.full(window.sessionStorage.getItem("index"));
+        })
+    }
     //列表操作
     table.on('toolbar(userList)', function (obj) {
 
@@ -223,6 +255,9 @@
             case "usable":
             case "del":
                 UsableOrDelete($(this), obj.event, checkStatus.data)
+                break;
+            case "setRole":
+                SetRole(checkStatus.data);
                 break;
             default:
                 break;
