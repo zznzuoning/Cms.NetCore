@@ -63,5 +63,18 @@ namespace Cms.NetCore.Infrastructure.enums
         /// </summary>
         [Text("该URL已经失效")]
         URLExpireError = 407,
+        /// <summary>
+        /// 该URL已经失效
+        /// </summary>
+        [Text("验证码输入有误")]
+        SignInCaptchaCodeError = 408,
+        [Text("用户名或密码错误")]
+        SignInUserNameOrPassWordError = 409,
+        [Text("该用户已被删除")]
+        SignInUserIsDeleteError = 409,
+        [Text("该用户已被禁用")]
+        SignInUserIsEnabledError = 410,
+        [Text("未分配角色，禁止登录")]
+        SignInUserNoRoleError =411
     }
 }

@@ -69,5 +69,32 @@ namespace Cms.NetCore.Repository
             await EFContext.Context.Set<UserRole>().AddRangeAsync(userRole);
             return await EFContext.Context.SaveChangesAsync() > 0;
         }
+
+        public UserManager SignIn(UserLogin userLogin)
+        {
+           
+           var userLoginModel= EFContext.Context.Set<UserLogin>().FirstOrDefault(d => d.UserName == userLogin.UserName && d.PassWord == userLogin.PassWord);
+            if (userLoginModel != null)
+            {
+                userLoginModel.LogInCount += 1;
+                userLoginModel.LastLoginIp = userLogin.LastLoginIp;
+                userLoginModel.LastLoginTime = DateTime.Now;
+                EFContext.Context.SaveChanges();
+            }
+            return userLoginModel != null ? userLoginModel.UserManager : null;
+        }
+
+        public async Task<UserManager> SignInAsync(UserLogin userLogin)
+        {
+            var userLoginModel = EFContext.Context.Set<UserLogin>().FirstOrDefault(d => d.UserName == userLogin.UserName && d.PassWord == userLogin.PassWord);
+            if (userLoginModel != null)
+            {
+                userLoginModel.LogInCount += 1;
+                userLoginModel.LastLoginIp = userLogin.LastLoginIp;
+                userLoginModel.LastLoginTime = DateTime.Now;
+                await EFContext.Context.SaveChangesAsync();
+            }
+            return userLoginModel != null ? userLoginModel.UserManager : null;
+        }
     }
 }

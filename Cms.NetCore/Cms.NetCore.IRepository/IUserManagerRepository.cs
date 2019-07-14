@@ -12,5 +12,7 @@ namespace Cms.NetCore.IRepository
         Task<bool> DelUserRoleByUserIdAsync(Guid id);
         bool SetRole(List<UserRole> userRole);
         Task<bool> SetRoleAsync(List<UserRole> userRole);
+        UserManager SignIn(UserLogin userLogin);
+        Task<UserManager> SignInAsync(UserLogin userLogin);
     }
 }

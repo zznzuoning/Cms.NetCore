@@ -1,6 +1,6 @@
 //获取系统时间
 var newDate = '';
-//getLangDate();
+getLangDate();
 //值小于10时，在前面补0
 function dateFilter(date){
     if(date < 10){return "0"+date;}
@@ -19,7 +19,7 @@ function getLangDate(){
     var second = dateObj.getSeconds(); //当前系统时间的秒钟值
     var timeValue = "" +((hour >= 12) ? (hour >= 18) ? "晚上" : "下午" : "上午" ); //当前时间属于上午、晚上还是下午
     newDate = dateFilter(year)+"年"+dateFilter(month)+"月"+dateFilter(date)+"日 "+" "+dateFilter(hour)+":"+dateFilter(minute)+":"+dateFilter(second);
-    document.getElementById("nowTime").innerHTML = "亲爱的驊驊龔頾，"+timeValue+"好！ 欢迎使用layuiCMS 2.0模版。当前时间为： "+newDate+"　"+week;
+    document.getElementById("nowTime").innerHTML = "亲爱的.NET Corer，" + timeValue + "好！ 欢迎使用CzarCms后台管理系统。当前时间为： " + newDate + "　" + week;
     setTimeout("getLangDate()",1000);
 }
 
@@ -29,8 +29,7 @@ layui.use(['form','element','layer','jquery'],function(){
         layer =  layui.layer,
         element = layui.element;
         $ = layui.jquery;
-    //上次登录时间【此处应该从接口获取，实际使用中请自行更换】
-    $(".loginTime").html(newDate.split("日")[0]+"日</br>"+newDate.split("日")[1]);
+
     //icon动画
     $(".panel a").hover(function(){
         $(this).find(".layui-anim").addClass("layui-anim-scaleSpring");

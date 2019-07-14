@@ -4,6 +4,7 @@ using Cms.NetCore.IRepository;
 using Cms.NetCore.IServices;
 using Cms.NetCore.Models;
 using Cms.NetCore.ViewModels;
+using Cms.NetCore.ViewModels.param.Account;
 using Cms.NetCore.ViewModels.param.UserManager;
 using System;
 using System.Collections.Generic;
@@ -114,6 +115,51 @@ namespace Cms.NetCore.Services
                     return result;
                 }
 
+                return result;
+            }
+            catch (Exception ex)
+            {
+                ex.Source = this.GetType().Name;
+                result.code = (int)StatusCodeEnum.Error;
+                result.msg = $"{ex.Source}出现异常,请联系管理员";
+                return result;
+            }
+        }
+
+        public DataResult<UserManager> SignIn(LoginPara loginPara)
+        {
+            var result = new DataResult<UserManager>();
+            try
+            {
+                var userLogin = new UserLogin {
+                    UserName=loginPara.UserName,
+                    PassWord=loginPara.PassWord,
+                    LastLoginIp=loginPara.Ip
+                };
+                result.data = _userManagerRepository.SignIn(userLogin);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                ex.Source = this.GetType().Name;
+                result.code = (int)StatusCodeEnum.Error;
+                result.msg = $"{ex.Source}出现异常,请联系管理员";
+                return result;
+            }
+        }
+
+        public async Task<DataResult<UserManager>> SignInAsync(LoginPara loginPara)
+        {
+            var result = new DataResult<UserManager>();
+            try
+            {
+                var userLogin = new UserLogin
+                {
+                    UserName = loginPara.UserName,
+                    PassWord = loginPara.PassWord,
+                    LastLoginIp = loginPara.Ip
+                };
+                result.data = await _userManagerRepository.SignInAsync(userLogin);
                 return result;
             }
             catch (Exception ex)

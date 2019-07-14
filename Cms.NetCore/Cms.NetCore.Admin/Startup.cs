@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using Alexinea.Autofac.Extensions.DependencyInjection;
 using Autofac;
 using Cms.NetCore.Admin.autofac;
+using Cms.NetCore.Infrastructure.Extension;
 using Cms.NetCore.IRepository;
 using Cms.NetCore.IServices;
 using Cms.NetCore.Models;
 using Cms.NetCore.Repository;
 using Cms.NetCore.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -37,11 +39,21 @@ namespace Cms.NetCore.Admin
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(15);
+                options.Cookie.HttpOnly = true;
+            });
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.LogoutPath = "/Account/LoginOut";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+                });
             services.AddMvc().AddJsonOptions(options =>
             {
                 //设置时间格式
@@ -74,7 +86,9 @@ namespace Cms.NetCore.Admin
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
+            app.UseSession();
+            app.UseAuthentication();
+            app.UseAuthorize();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

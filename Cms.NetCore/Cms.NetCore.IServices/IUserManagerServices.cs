@@ -1,5 +1,6 @@
 ﻿using Cms.NetCore.Models;
 using Cms.NetCore.ViewModels;
+using Cms.NetCore.ViewModels.param.Account;
 using Cms.NetCore.ViewModels.param.UserManager;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,7 @@ namespace Cms.NetCore.IServices
     {
         Result SetRole(SetRolePara  setRolePara);
         Task<Result> SetRoleAsync(SetRolePara setRolePara);
+        DataResult<UserManager> SignIn(LoginPara loginPara);
+        Task<DataResult<UserManager>> SignInAsync(LoginPara loginPara);
     }
 }

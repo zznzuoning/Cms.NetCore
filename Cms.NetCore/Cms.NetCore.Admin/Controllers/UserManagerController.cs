@@ -21,7 +21,7 @@ namespace Cms.NetCore.Admin.Controllers
     {
         private readonly IUserManagerServices _userManagerServices;
         private readonly IRoleServices _roleServices;
-        public UserManagerController(IUserManagerServices userManagerServices,IRoleServices roleServices)
+        public UserManagerController(IUserManagerServices userManagerServices,IRoleServices roleServices):base(userManagerServices)
         {
             _userManagerServices = userManagerServices;
             _roleServices = roleServices;
@@ -135,7 +135,7 @@ namespace Cms.NetCore.Admin.Controllers
                 {
                     Id = Guid.NewGuid(),
                     UserName = userAddOrUpdate.UserName,
-                    PassWord = "q123456",
+                    PassWord = Md5.GetMD5String("q123456"),
                     LastLoginIp = Ip,
                     LastLoginTime = DateTime.Now,
                     LogInCount = 1
