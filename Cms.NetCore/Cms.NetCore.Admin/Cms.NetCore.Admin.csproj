@@ -9,6 +9,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Migrations\20190721104219_2019-7-21.cs" />
+    <Compile Remove="Migrations\20190721104219_2019-7-21.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Alexinea.Autofac.Extensions.DependencyInjection" Version="4.2.0" />

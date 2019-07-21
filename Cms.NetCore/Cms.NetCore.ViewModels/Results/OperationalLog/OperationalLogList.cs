@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
-namespace Cms.NetCore.Models
+namespace Cms.NetCore.ViewModels.Results.OperationalLog
 {
-    /// <summary>
-    /// 操作日志表
-    /// </summary>
-    public class OperationalLog : IEntity
+    public class OperationalLogList
     {
         public Guid Id { get; set; }
         /// <summary>
@@ -26,7 +22,7 @@ namespace Cms.NetCore.Models
         /// <summary>
         /// 操作人
         /// </summary>
-        public Guid UserManagerId { get; set; }
+        public string UserName { get; set; }
         /// <summary>
         /// 操作时间
         /// </summary>
@@ -39,10 +35,6 @@ namespace Cms.NetCore.Models
         /// <summary>
         /// 操作状态(1：成功，2：异常)
         /// </summary>
-        public int OperationalState { get; set; } = 1;
-        /// <summary>
-        /// 操作人信息
-        /// </summary>
-        public virtual UserManager UserManager { get; set; }
+        public int OperationalState { get; set; }
     }
 }

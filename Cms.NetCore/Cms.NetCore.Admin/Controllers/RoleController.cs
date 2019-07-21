@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cms.NetCore.Infrastructure.Comm;
+using Cms.NetCore.Infrastructure.CusttomerAttribute;
 using Cms.NetCore.Infrastructure.enums;
 using Cms.NetCore.Infrastructure.Extension;
 using Cms.NetCore.Infrastructure.Specifications;
@@ -58,7 +59,7 @@ namespace Cms.NetCore.Admin.Controllers
                 data = roleList
             });
         }
-
+        [Operation(IgnoreLog = true)]
         public IActionResult CreateOrUpdate()
         {
             return View();
@@ -102,6 +103,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// <param name="userAddOrUpdate"></param>
         /// <returns></returns>
         [HttpPost]
+        [Operation(OperationName = "添加或修改角色")]
         public async Task<IActionResult> CreateOrUpdate([FromForm] RoleAddOrUpdate  roleAddOrUpdate)
         {
             var result = new Result();
@@ -149,6 +151,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
+        [Operation(OperationName = "删除角色")]
         public async Task<IActionResult>Delete([FromForm]string id)
         {
             var result = new Result
@@ -190,6 +193,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// 角色授权
         /// </summary>
         /// <returns></returns>
+       [Operation(IgnoreLog =true)]
         public IActionResult RoleMenu()
         {
             return View();
@@ -199,6 +203,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
+        [Operation(OperationName = "角色授权")]
         public async Task<IActionResult> RoleMenu([FromForm]string id,List<MenuButtonAttributes> menuButtonAttributes)
         {
             var result = new Result

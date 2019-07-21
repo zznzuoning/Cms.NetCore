@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Cms.NetCore.Admin.Filter;
 using Cms.NetCore.Repository;
 using Cms.NetCore.Services;
 using System;
@@ -21,7 +22,7 @@ namespace Cms.NetCore.Admin.autofac
             builder.RegisterAssemblyTypes(typeof(ButtionServices).Assembly)
                  .Where(t => t.Name.EndsWith("Services"))
                  .AsImplementedInterfaces();
-
+            builder.RegisterType<OperationalLogFilterAttribute>();
         }
 
         public static Assembly GetAssembly(string assemblyName)

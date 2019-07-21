@@ -15,6 +15,7 @@ using Cms.NetCore.Infrastructure.Extension;
 using Cms.NetCore.ViewModels.param.UserManager;
 using Microsoft.AspNetCore.Http;
 using Cms.NetCore.ViewModels.Results.Home;
+using Cms.NetCore.Infrastructure.CusttomerAttribute;
 
 namespace Cms.NetCore.Admin.Controllers
 {
@@ -101,6 +102,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// 添加或修改
         /// </summary>
         /// <returns></returns>
+        [Operation(IgnoreLog = true)]
         public IActionResult CreateOrUpdate()
         {
             return View();
@@ -111,6 +113,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// <param name="userAddOrUpdate"></param>
         /// <returns></returns>
         [HttpPost]
+        [Operation(OperationName = "添加或修改用户")]
         public async Task<IActionResult> CreateOrUpdate([FromForm] UserAddOrUpdate userAddOrUpdate)
         {
             var result = new Result();
@@ -172,6 +175,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
+        [Operation(OperationName = "删除或禁用用户")]
         public async Task<IActionResult> SetIsEnableOrDelete([FromForm]SetIsEnableOrDelete setIsEnableOrDelete)
         {
             var result = new Result
@@ -215,12 +219,13 @@ namespace Cms.NetCore.Admin.Controllers
             }
             return Json(result);
         }
-
+        [Operation(IgnoreLog = true)]
         public IActionResult SetRole()
         {
             return View();
         }
         [HttpPost]
+        [Operation(OperationName = "设置角色")]
         public async Task<IActionResult> SetRole([FromForm]SetRolePara setRolePara)
         {
 
@@ -268,6 +273,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// 修改密码
         /// </summary>
         /// <returns></returns>
+        [Operation(IgnoreLog = true)]
         public IActionResult UpdatePassWord()
         {
             var user = new UserInfo
@@ -276,6 +282,8 @@ namespace Cms.NetCore.Admin.Controllers
             };
             return View(user);
         }
+        [HttpPost]
+        [Operation(OperationName = "修改密码")]
         public async Task<IActionResult> UpdatePassWord([FromForm]UpdatePwdPara updatePwdPara)
         {
             var result = new Result {

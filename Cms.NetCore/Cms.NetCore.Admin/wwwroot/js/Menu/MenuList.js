@@ -33,7 +33,7 @@
             { field: 'url', title: '连接地址', minWidth: 100, align: "center" },
             {
                 field: 'icon', title: '图标', width: 100, align: "center", templet: function (d) {
-                    return d.icon != null ? "<i class='layui-icon'>" + d.icon + "</i>" : "";
+                    return d.icon != null ? d.icon.indexOf("icon") != -1 ? "<i class='seraph " + d.icon + "'></i>" : "<i class='layui-icon'>" + d.icon + "</i>" : "";
                 } },
             { field: 'sort', title: '排序', width: 100, align: "center" },
             { field: 'updateUser', title: '最后更新人', align: 'center', minWidth: 100 },

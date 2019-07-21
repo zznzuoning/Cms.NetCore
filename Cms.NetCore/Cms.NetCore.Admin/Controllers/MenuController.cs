@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Cms.NetCore.Infrastructure.Comm;
+using Cms.NetCore.Infrastructure.CusttomerAttribute;
 using Cms.NetCore.Infrastructure.enums;
 using Cms.NetCore.Infrastructure.Extension;
 using Cms.NetCore.Infrastructure.Specifications;
@@ -107,6 +108,7 @@ namespace Cms.NetCore.Admin.Controllers
             }
             return Json(result);
         }
+        [Operation(IgnoreLog = true)]
         public IActionResult CreateOrUpdate()
         {
             return View();
@@ -117,6 +119,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// <param name="menuAddOrUpdate"></param>
         /// <returns></returns>
         [HttpPost]
+        [Operation(OperationName = "添加或修改菜单")]
         public async Task<IActionResult> CreateOrUpdate([FromForm] MenuAddOrUpdate menuAddOrUpdate)
         {
             var result = new Result();
@@ -258,6 +261,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
+        [Operation(OperationName = "删除菜单")]
         public async Task<IActionResult> Delete([FromForm]string id)
         {
             var result = new Result
@@ -327,6 +331,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// 分配按钮
         /// </summary>
         /// <returns></returns>
+        [Operation(IgnoreLog = true)]
         public IActionResult SetMenuButton()
         {
             return View();
@@ -363,6 +368,7 @@ namespace Cms.NetCore.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
+        [Operation(OperationName = "分配按钮")]
         public async Task<IActionResult> SetMenuButton([FromForm]MenuButtonModel menuButtonModel)
         {
             var result = new Result
