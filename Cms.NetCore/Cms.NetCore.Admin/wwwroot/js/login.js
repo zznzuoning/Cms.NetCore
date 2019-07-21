@@ -2,12 +2,6 @@ layui.use(['form','layer','jquery'],function(){
     var form = layui.form,
         layer = parent.layer === undefined ? layui.layer : top.layer
         $ = layui.jquery;
-
-    $(".loginBody .seraph").click(function(){
-        layer.msg("这只是做个样式，至于功能，你见过哪个后台能这样登录的？还是老老实实的找管理员去注册吧",{
-            time:5000
-        });
-    })
     $("#CaptchaCodeImg").click(function () {
         d = new Date();
         $("#CaptchaCodeImg").attr("src", "/Account/CheckCode?" + d.getTime());
