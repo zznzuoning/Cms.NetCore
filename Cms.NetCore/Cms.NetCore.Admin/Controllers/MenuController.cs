@@ -15,20 +15,30 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cms.NetCore.Admin.Controllers
 {
-    public class MenuController : Controller
+    public class MenuController : BaseController
     {
         private readonly IMenuServices _menuServices;
         private readonly IButtionServices _buttionServices;
-        public MenuController(IMenuServices menuServices, IButtionServices buttionServices)
+        public MenuController(IMenuServices menuServices, IButtionServices buttionServices,IUserManagerServices userManagerServices):base(userManagerServices)
         {
             _menuServices = menuServices;
             _buttionServices = buttionServices;
         }
         public IActionResult Index()
         {
+           
             return View();
         }
-
+        /// <summary>
+        /// 获取导航菜单
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IActionResult> GetUserMenuList()
+        {
+           
+            return Json(await _menuServices.GetMenusByUserIdAsync(UserManager.Id));
+        }
+     
         /// <summary>
         /// 获取所有菜单数据
         /// </summary>
@@ -143,6 +153,7 @@ namespace Cms.NetCore.Admin.Controllers
             }
             if (menu.Id == Guid.Empty)
             {
+                menu.CreateUserId = UserManager.Id;
                 var insertResult = await _menuServices.InsertAsync(menu);
                 if (insertResult.code != 0)
                 {
@@ -151,6 +162,8 @@ namespace Cms.NetCore.Admin.Controllers
             }
             else
             {
+                menu.UpdateUserId = UserManager.Id;
+                menu.UpdateTime = DateTime.Now;
                 var updateResult = await _menuServices.UpdateAsync(menu);
                 if (updateResult.code != 0)
                 {
@@ -273,6 +286,8 @@ namespace Cms.NetCore.Admin.Controllers
                 return Json(result);
             }
             menu.IsDelete = true;
+            menu.UpdateUserId = UserManager.Id;
+            menu.UpdateTime = DateTime.Now;
             //先把数据库的数据加载出来，避免每次都去查数据库
             var childrenMenus = menu.ChildrenMenus.ToList();
             if (childrenMenus.Any())
@@ -297,6 +312,8 @@ namespace Cms.NetCore.Admin.Controllers
             {
 
                 item.IsDelete = true;
+                item.UpdateUserId = UserManager.Id;
+                item.UpdateTime = DateTime.Now;
                 if (item.ChildrenMenus.Any())
                 {
                     item.ChildrenMenus = UpdateChildren(item.ChildrenMenus);

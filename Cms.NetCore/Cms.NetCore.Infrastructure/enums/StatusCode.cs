@@ -71,10 +71,15 @@ namespace Cms.NetCore.Infrastructure.enums
         [Text("用户名或密码错误")]
         SignInUserNameOrPassWordError = 409,
         [Text("该用户已被删除")]
-        SignInUserIsDeleteError = 409,
+        SignInUserIsDeleteError = 410,
         [Text("该用户已被禁用")]
-        SignInUserIsEnabledError = 410,
+        SignInUserIsEnabledError = 411,
         [Text("未分配角色，禁止登录")]
-        SignInUserNoRoleError =411
+        SignInUserNoRoleError =412,
+        [Text("新密码不能与旧密码一样")]
+        NewPasswordEqualOldError = 413,
+        [Text("两次密码输入不一致")]
+        ConfirmPwdError = 414
+
     }
 }

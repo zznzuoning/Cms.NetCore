@@ -14,5 +14,7 @@ namespace Cms.NetCore.IRepository
         Task<bool> SetRoleAsync(List<UserRole> userRole);
         UserManager SignIn(UserLogin userLogin);
         Task<UserManager> SignInAsync(UserLogin userLogin);
+        bool UpdatePassWord(UserLogin userLogin);
+        Task<bool> UpdatePassWordAsync(UserLogin userLogin);
     }
 }

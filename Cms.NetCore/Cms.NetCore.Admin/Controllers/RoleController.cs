@@ -15,10 +15,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cms.NetCore.Admin.Controllers
 {
-    public class RoleController : Controller
+    public class RoleController : BaseController
     {
         private readonly IRoleServices _roleServices;
-        public RoleController(IRoleServices roleServices)
+        public RoleController(IRoleServices roleServices,IUserManagerServices userManagerServices):base(userManagerServices)
         {
             _roleServices = roleServices;
         }
@@ -122,6 +122,7 @@ namespace Cms.NetCore.Admin.Controllers
             role.IsDefault = roleAddOrUpdate.IsDefault;
             if (role.Id == Guid.Empty)
             {
+                role.CreateUserId = UserManager.Id;
                 var insertResult = await _roleServices.InsertAsync(role);
                 if (insertResult.code != 0)
                 {
@@ -130,6 +131,8 @@ namespace Cms.NetCore.Admin.Controllers
             }
             else
             {
+                role.UpdateUserId = UserManager.Id;
+                role.UpdateTime = DateTime.Now;
                 var updateResult = await _roleServices.UpdateAsync(role);
                 if (updateResult.code != 0)
                 {
@@ -173,7 +176,8 @@ namespace Cms.NetCore.Admin.Controllers
                 return Json(result);
             }
             role.IsDelete = true;
-            
+            role.UpdateUserId = UserManager.Id;
+            role.UpdateTime = DateTime.Now;
             var updateResult = await _roleServices.UpdateAsync(role);
             if (updateResult.code != 0)
             {
@@ -207,6 +211,12 @@ namespace Cms.NetCore.Admin.Controllers
             {
                 result.code = (int)StatusCodeEnum.HttpMehtodError;
                 result.msg = StatusCodeEnum.HttpMehtodError.GetEnumText();
+                return Json(result);
+            }
+            if (!menuButtonAttributes.Any())
+            {
+                result.code = (int)StatusCodeEnum.ParameterError;
+                result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                 return Json(result);
             }
             var getRoleResult = await _roleServices.GetAsync(gid);

@@ -9,5 +9,7 @@ namespace Cms.NetCore.IRepository
     {
         int SetMenuButton(List<MenuButton> menuButtons);
         Task<int> SetMenuButtonAsync(List<MenuButton> menuButtons);
+        List<Menu> GetMenusByUserId(Guid id);
+        Task<List<Menu>> GetMenusByUserIdAsync(Guid id);
     }
 }

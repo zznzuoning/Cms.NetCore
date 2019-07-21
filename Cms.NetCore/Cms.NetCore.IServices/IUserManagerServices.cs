@@ -15,5 +15,7 @@ namespace Cms.NetCore.IServices
         Task<Result> SetRoleAsync(SetRolePara setRolePara);
         DataResult<UserManager> SignIn(LoginPara loginPara);
         Task<DataResult<UserManager>> SignInAsync(LoginPara loginPara);
+        Result UpdatePassWord(UpdatePwdPara updatePwdPara);
+        Task<Result> UpdatePassWordAsync(UpdatePwdPara updatePwdPara);
     }
 }

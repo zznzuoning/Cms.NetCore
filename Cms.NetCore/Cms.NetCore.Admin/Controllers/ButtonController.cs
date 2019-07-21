@@ -15,10 +15,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Cms.NetCore.Admin.Controllers
 {
-    public class ButtonController : Controller
+    public class ButtonController : BaseController
     {
         private readonly IButtionServices _buttionServices;
-        public ButtonController(IButtionServices buttionServices)
+        public ButtonController(IButtionServices buttionServices, IUserManagerServices userManagerServices) : base(userManagerServices)
         {
             _buttionServices = buttionServices;
         }
@@ -118,6 +118,7 @@ namespace Cms.NetCore.Admin.Controllers
             button.Description = buttonAddOrUpdate.Description;
             if (button.Id == Guid.Empty)
             {
+                button.CreateUserId = UserManager.Id;
                 var insertResult = await _buttionServices.InsertAsync(button);
                 if (insertResult.code != 0)
                 {
@@ -126,6 +127,8 @@ namespace Cms.NetCore.Admin.Controllers
             }
             else
             {
+                button.UpdateUserId = UserManager.Id;
+                button.UpdateTime = DateTime.Now;
                 var updateResult = await _buttionServices.UpdateAsync(button);
                 if (updateResult.code != 0)
                 {
@@ -163,6 +166,8 @@ namespace Cms.NetCore.Admin.Controllers
             }
             var button = getResult.data;
             button.IsDelete = true;
+            button.UpdateUserId = UserManager.Id;
+            button.UpdateTime = DateTime.Now;
             var updateResult = await _buttionServices.UpdateAsync(button);
             if (updateResult.code != 0)
             {

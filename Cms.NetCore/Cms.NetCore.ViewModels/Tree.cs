@@ -43,4 +43,26 @@ namespace Cms.NetCore.ViewModels
     {
         public Guid? MenuButtonId { get; set; }
     }
+
+    public class UserMenuTree
+    {
+        public Guid Id { get; set; }
+        /// <summary>
+        /// 节点标题
+        /// </summary>
+        public string Title { get; set; }
+        /// <summary>
+        /// 节点是否初始展开
+        /// </summary>
+        public bool Spread { get; set; }
+        /// <summary>
+        /// 图标
+        /// </summary>
+        public string Icon { get; set; }
+        /// <summary>
+        /// 连接
+        /// </summary>
+        public string Href { get; set; }
+        public List<UserMenuTree> Children { get; set; }
+    }
 }

@@ -36,13 +36,6 @@
                 layer.alert('操作失败！！！' + XMLHttpRequest.status + "|" + XMLHttpRequest.readyState + "|" + textStatus, { icon: 5 });
             }
         });
-        setTimeout(function () {
-            top.layer.close(index);
-            top.layer.msg("角色添加成功！");
-            layer.closeAll("iframe");
-            //刷新父页面
-           parent.location.reload();
-        }, 2000);
         return false;
     });
 

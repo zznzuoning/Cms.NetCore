@@ -14,6 +14,7 @@ using Cms.NetCore.Infrastructure.Comm;
 using Cms.NetCore.Infrastructure.Extension;
 using Cms.NetCore.ViewModels.param.UserManager;
 using Microsoft.AspNetCore.Http;
+using Cms.NetCore.ViewModels.Results.Home;
 
 namespace Cms.NetCore.Admin.Controllers
 {
@@ -131,6 +132,7 @@ namespace Cms.NetCore.Admin.Controllers
             user.Email = userAddOrUpdate.Email;
             if (user.Id == Guid.Empty)
             {
+                user.CreateUserId = UserManager.Id;
                 var userLogin = new UserLogin
                 {
                     Id = Guid.NewGuid(),
@@ -150,6 +152,8 @@ namespace Cms.NetCore.Admin.Controllers
             }
             else
             {
+                user.UpdateUserId = UserManager.Id;
+                user.UpdateTime =DateTime.Now;
                 user.UserLogin.UserName = userAddOrUpdate.UserName;
                 var updateResult = await _userManagerServices.UpdateAsync(user);
                 if (updateResult.code != 0)
@@ -202,6 +206,8 @@ namespace Cms.NetCore.Admin.Controllers
             {
                 user.IsEnabled = !user.IsEnabled;
             }
+            user.UpdateUserId = UserManager.Id;
+            user.UpdateTime = DateTime.Now;
             var updateResult = await _userManagerServices.UpdateAsync(user);
             if (updateResult.code != 0)
             {
@@ -258,6 +264,59 @@ namespace Cms.NetCore.Admin.Controllers
             }).ToList();
             return Json(roles);
         }
-
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult UpdatePassWord()
+        {
+            var user = new UserInfo
+            {
+                UserName = UserManager.RealName
+            };
+            return View(user);
+        }
+        public async Task<IActionResult> UpdatePassWord([FromForm]UpdatePwdPara updatePwdPara)
+        {
+            var result = new Result {
+                code = (int)StatusCodeEnum.Success,
+                msg = StatusCodeEnum.Success.GetEnumText()
+            };
+            if (string.IsNullOrWhiteSpace(updatePwdPara.NewPwd) || string.IsNullOrWhiteSpace(updatePwdPara.ConfirmPwd))
+            {
+                result.code = (int)StatusCodeEnum.HttpRequestError;
+                result.msg = StatusCodeEnum.HttpRequestError.GetEnumText();
+                return Json(result);
+            }
+            if (!updatePwdPara.ConfirmPwd.Equals(updatePwdPara.NewPwd, StringComparison.OrdinalIgnoreCase))
+            {
+                result.code = (int)StatusCodeEnum.ConfirmPwdError;
+                result.msg = StatusCodeEnum.ConfirmPwdError.GetEnumText();
+                return Json(result);
+            }
+            string newPwd = Md5.GetMD5String(updatePwdPara.NewPwd);
+            if (UserManager.UserLogin.PassWord.Equals(newPwd, StringComparison.OrdinalIgnoreCase))
+            {
+                result.code = (int)StatusCodeEnum.NewPasswordEqualOldError;
+                result.msg = StatusCodeEnum.NewPasswordEqualOldError.GetEnumText();
+                return Json(result);
+            }
+            updatePwdPara.Id = UserManager.UserLoginId;
+            updatePwdPara.NewPwd = newPwd;
+            var updateResult =await _userManagerServices.UpdatePassWordAsync(updatePwdPara);
+            if (updateResult.code != 0)
+            {
+                return Json(updateResult);
+            }
+            return Json(result);
+        }
+        /// <summary>
+        /// 个人资料
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult UserManagerInfo()
+        {
+            return View();
+        }
     }
 }

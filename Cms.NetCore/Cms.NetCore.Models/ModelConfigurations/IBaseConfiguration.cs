@@ -16,7 +16,7 @@ namespace Cms.NetCore.Models.ModelConfigurations
             builder.Property(d => d.CreateUserId).HasColumnName("CreateUserId");
             builder.Property(d => d.CreateTime).HasColumnName("CreateTime").HasDefaultValueSql("getdate()").ValueGeneratedOnAdd();
             builder.Property(d => d.UpdateUserId).HasColumnName("UpdateUserId");
-            builder.Property(d => d.UpdateTime).HasColumnName("UpdateTime").HasDefaultValueSql("getdate()").ValueGeneratedOnAddOrUpdate();
+            builder.Property(d => d.UpdateTime).HasColumnName("UpdateTime");
             ////外键
             builder.HasOne(d => d.CreateUser).WithOne().OnDelete(DeleteBehavior.Restrict);
 

@@ -15,5 +15,7 @@ namespace Cms.NetCore.IServices
         Task<Result> SetMenuButtonAsync(MenuButtonModel menuButton);
         DataResult<MenuButtonList> GetButtonByMenuId(Guid id);
         Task<DataResult<MenuButtonList>> GetButtonByMenuIdAsync(Guid id);
+        ListResult<UserMenuTree> GetMenusByUserId(Guid id);
+        Task<ListResult<UserMenuTree>> GetMenusByUserIdAsync(Guid id);
     }
 }

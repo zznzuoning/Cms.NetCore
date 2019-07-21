@@ -170,5 +170,59 @@ namespace Cms.NetCore.Services
                 return result;
             }
         }
+
+        public Result UpdatePassWord(UpdatePwdPara updatePwdPara)
+        {
+            var result = new Result();
+            try
+            {
+                var userLogin = new UserLogin
+                {
+                    Id=updatePwdPara.Id,
+                    PassWord=updatePwdPara.NewPwd
+                };
+                bool isUpdate =  _userManagerRepository.UpdatePassWord(userLogin);
+                if(!isUpdate)
+                {
+                    result.code = (int)StatusCodeEnum.Accepted;
+                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                ex.Source = this.GetType().Name;
+                result.code = (int)StatusCodeEnum.Error;
+                result.msg = $"{ex.Source}出现异常,请联系管理员";
+                return result;
+            }
+        }
+
+        public async Task<Result> UpdatePassWordAsync(UpdatePwdPara updatePwdPara)
+        {
+            var result = new Result();
+            try
+            {
+                var userLogin = new UserLogin
+                {
+                    Id = updatePwdPara.Id,
+                    PassWord = updatePwdPara.NewPwd
+                };
+                bool isUpdate = await _userManagerRepository.UpdatePassWordAsync(userLogin);
+                if (!isUpdate)
+                {
+                    result.code = (int)StatusCodeEnum.Accepted;
+                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                ex.Source = this.GetType().Name;
+                result.code = (int)StatusCodeEnum.Error;
+                result.msg = $"{ex.Source}出现异常,请联系管理员";
+                return result;
+            }
+        }
     }
 }

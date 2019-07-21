@@ -27,7 +27,7 @@ layui.use(['form','layer','jquery'],function(){
                 } else {
                     layer.alert(res.msg, { icon: 5 });
                     d = new Date();
-                    $("#Password").val('');
+                    $("#code").val('');
                     $("#CaptchaCodeImg").attr("src", "/Account/CheckCode?" + d.getTime());
                 }
 

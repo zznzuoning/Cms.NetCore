@@ -31,7 +31,10 @@
             },
             { field: 'code', title: '标识', width: 100, align: "center" },
             { field: 'url', title: '连接地址', minWidth: 100, align: "center" },
-            { field: 'icon', title: '图标', width: 100, align: "center" },
+            {
+                field: 'icon', title: '图标', width: 100, align: "center", templet: function (d) {
+                    return d.icon != null ? "<i class='layui-icon'>" + d.icon + "</i>" : "";
+                } },
             { field: 'sort', title: '排序', width: 100, align: "center" },
             { field: 'updateUser', title: '最后更新人', align: 'center', minWidth: 100 },
             { field: 'updateTime', title: '最后更新时间', align: 'center', minWidth: 150 }

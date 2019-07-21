@@ -72,8 +72,8 @@ namespace Cms.NetCore.Repository
 
         public UserManager SignIn(UserLogin userLogin)
         {
-           
-           var userLoginModel= EFContext.Context.Set<UserLogin>().FirstOrDefault(d => d.UserName == userLogin.UserName && d.PassWord == userLogin.PassWord);
+
+            var userLoginModel = EFContext.Context.Set<UserLogin>().FirstOrDefault(d => d.UserName == userLogin.UserName && d.PassWord == userLogin.PassWord);
             if (userLoginModel != null)
             {
                 userLoginModel.LogInCount += 1;
@@ -95,6 +95,20 @@ namespace Cms.NetCore.Repository
                 await EFContext.Context.SaveChangesAsync();
             }
             return userLoginModel != null ? userLoginModel.UserManager : null;
+        }
+
+        public bool UpdatePassWord(UserLogin userLogin)
+        {
+            var userLoginModel = EFContext.Context.Set<UserLogin>().Find(userLogin.Id);
+            userLoginModel.PassWord = userLogin.PassWord;
+            return EFContext.Context.SaveChanges() > 0;
+        }
+
+        public async Task<bool> UpdatePassWordAsync(UserLogin userLogin)
+        {
+            var userLoginModel = await EFContext.Context.Set<UserLogin>().FindAsync(userLogin.Id);
+            userLoginModel.PassWord = userLogin.PassWord;
+            return await EFContext.Context.SaveChangesAsync() > 0;
         }
     }
 }

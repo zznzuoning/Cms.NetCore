@@ -30,8 +30,8 @@ namespace Cms.NetCore.Services
             var result = new DataResult<MenuButtonList>();
             try
             {
-                List<MenuButton> menuButtons = _menuButtonRepository.GetList(Specification<MenuButton>.Eval(d=>d.MenuId==id));
-                result.data.ButtonIds= menuButtons.Select(d => d.ButtonId).ToArray();
+                List<MenuButton> menuButtons = _menuButtonRepository.GetList(Specification<MenuButton>.Eval(d => d.MenuId == id));
+                result.data.ButtonIds = menuButtons.Select(d => d.ButtonId).ToArray();
                 return result;
             }
             catch (Exception ex)
@@ -50,7 +50,88 @@ namespace Cms.NetCore.Services
             {
                 List<MenuButton> menuButtons = await _menuButtonRepository.GetListAsync(Specification<MenuButton>.Eval(d => d.MenuId == id));
                 var buttonids = menuButtons.Select(d => d.ButtonId).ToArray();
-                result.data=new MenuButtonList { ButtonIds= buttonids };
+                result.data = new MenuButtonList { ButtonIds = buttonids };
+                return result;
+            }
+            catch (Exception ex)
+            {
+                ex.Source = this.GetType().Name;
+                result.code = (int)StatusCodeEnum.Error;
+                result.msg = $"{ex.Source}出现异常,请联系管理员";
+                return result;
+            }
+        }
+
+        public ListResult<UserMenuTree> GetMenusByUserId(Guid id)
+        {
+            var result = new ListResult<UserMenuTree>();
+            try
+            {
+                List<Menu> menus = _menuRepository.GetMenusByUserId(id);
+                Guid?[] parentIds = menus.Select(d => d.ParentId).Distinct().ToArray();
+                var parentMenus = _menuRepository.GetList(Specification<Menu>.Eval(d => parentIds.Any(x => x == d.Id)));
+                var unionMenus = menus.Union(parentMenus);
+                var treeList = new List<UserMenuTree>();
+                foreach (var item in unionMenus.Where(d=>d.ParentId==null))
+                {
+                    var tree = new UserMenuTree();
+                    tree.Id = item.Id;
+                    tree.Title = item.Name;
+                    tree.Icon = item.Icon;
+                    tree.Href = item.BaseUrl;
+                    tree.Spread = true;
+                    tree.Children = Recursion(unionMenus.ToList(), item.Id);
+                    treeList.Add(tree);
+                }
+                result.data = treeList;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                ex.Source = this.GetType().Name;
+                result.code = (int)StatusCodeEnum.Error;
+                result.msg = $"{ex.Source}出现异常,请联系管理员";
+                return result;
+            }
+        }
+        private List<UserMenuTree> Recursion(List<Menu> menuList,Guid? id)
+        {
+            var treeList = new List<UserMenuTree>();
+            var menus = menuList.Where(d => d.ParentId == id);
+            foreach (var menu in menus)
+            {
+                var tree = new UserMenuTree();
+                tree.Id = menu.Id;
+                tree.Title = menu.Name;
+                tree.Icon = menu.Icon;
+                tree.Href = menu.BaseUrl;
+                tree.Children = Recursion(menuList, menu.Id);
+                treeList.Add(tree);
+            }
+            return treeList;
+        }
+        public async Task<ListResult<UserMenuTree>> GetMenusByUserIdAsync(Guid id)
+        {
+            var result = new ListResult<UserMenuTree>();
+            try
+            {
+                List<Menu> menus = await _menuRepository.GetMenusByUserIdAsync(id);
+                Guid?[] parentIds = menus.Select(d => d.ParentId).Distinct().ToArray();
+                var parentMenus =await _menuRepository.GetListAsync(Specification<Menu>.Eval(d => parentIds.Any(x => x == d.Id)));
+                var unionMenus = menus.Union(parentMenus);
+                var treeList = new List<UserMenuTree>();
+                foreach (var item in unionMenus.Where(d => d.ParentId == null))
+                {
+                    var tree = new UserMenuTree();
+                    tree.Id = item.Id;
+                    tree.Title = item.Name;
+                    tree.Icon = item.Icon;
+                    tree.Href = item.BaseUrl;
+                    tree.Spread = true;
+                    tree.Children = Recursion(unionMenus.ToList(), item.Id);
+                    treeList.Add(tree);
+                }
+                result.data = treeList;
                 return result;
             }
             catch (Exception ex)
@@ -77,7 +158,8 @@ namespace Cms.NetCore.Services
                 var menuButtonList = new List<MenuButton>();
                 foreach (var buttonid in menuButton.ButtonIds.Split(','))
                 {
-                    menuButtonList.Add(new MenuButton {
+                    menuButtonList.Add(new MenuButton
+                    {
                         MenuId = Guid.Parse(menuButton.MenuId),
                         ButtonId = Guid.Parse(buttonid)
                     });
