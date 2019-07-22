@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Alexinea.Autofac.Extensions.DependencyInjection;
 using Autofac;
 using Cms.NetCore.Admin.autofac;
+using Cms.NetCore.Infrastructure.Comm;
 using Cms.NetCore.Infrastructure.Extension;
 using Cms.NetCore.IRepository;
 using Cms.NetCore.IServices;
@@ -62,6 +63,7 @@ namespace Cms.NetCore.Admin
         ).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddDbContext<CmsDBContext>(options =>
         options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("CustomerDBDatabase"), b => b.MigrationsAssembly("Cms.NetCore.Admin")));
+       
             //使用AUTOFAC依赖注入
             var builder = new ContainerBuilder();
             builder.Populate(services);

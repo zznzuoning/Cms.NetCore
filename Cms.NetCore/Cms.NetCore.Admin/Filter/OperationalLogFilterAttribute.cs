@@ -1,4 +1,5 @@
-﻿using Cms.NetCore.Infrastructure.CusttomerAttribute;
+﻿using Cms.NetCore.Infrastructure.Comm;
+using Cms.NetCore.Infrastructure.CusttomerAttribute;
 using Cms.NetCore.IServices;
 using Cms.NetCore.Models;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -42,10 +43,12 @@ namespace Cms.NetCore.Admin.Filter
             {
                 var operationalLog = new OperationalLog
                 {
+                    Id=Guid.NewGuid(),
                     Controller = filterContext.ActionDescriptor.RouteValues["Controller"],
                     Action = filterContext.ActionDescriptor.RouteValues["Action"],
                     OperationalIp= c.Ip,
-                    UserManagerId=c.UserManager.Id
+                    UserManagerId=c.UserManager.Id,
+                    OperationalTime=DateTime.Now
                 };
                 if (filterContext.ActionDescriptor.EndpointMetadata.Any(d=>d.GetType()==typeof(OperationAttribute)))
                 {
@@ -64,7 +67,7 @@ namespace Cms.NetCore.Admin.Filter
                 {
                     operationalLog.OperationalState = 2;
                 }
-                _operationalLogServices.Insert(operationalLog);
+                new SqlServerHelper().Insert(operationalLog);
             }
             #endregion
         }

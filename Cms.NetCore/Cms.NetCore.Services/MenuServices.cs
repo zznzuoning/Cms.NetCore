@@ -28,45 +28,30 @@ namespace Cms.NetCore.Services
         public DataResult<MenuButtonList> GetButtonByMenuId(Guid id)
         {
             var result = new DataResult<MenuButtonList>();
-            try
-            {
+           
                 List<MenuButton> menuButtons = _menuButtonRepository.GetList(Specification<MenuButton>.Eval(d => d.MenuId == id));
                 result.data.ButtonIds = menuButtons.Select(d => d.ButtonId).ToArray();
                 return result;
-            }
-            catch (Exception ex)
-            {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
-            }
+            
+            
         }
 
         public async Task<DataResult<MenuButtonList>> GetButtonByMenuIdAsync(Guid id)
         {
             var result = new DataResult<MenuButtonList>();
-            try
-            {
+            
                 List<MenuButton> menuButtons = await _menuButtonRepository.GetListAsync(Specification<MenuButton>.Eval(d => d.MenuId == id));
                 var buttonids = menuButtons.Select(d => d.ButtonId).ToArray();
                 result.data = new MenuButtonList { ButtonIds = buttonids };
                 return result;
-            }
-            catch (Exception ex)
-            {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
-            }
+            
+          
         }
 
         public ListResult<UserMenuTree> GetMenusByUserId(Guid id)
         {
             var result = new ListResult<UserMenuTree>();
-            try
-            {
+           
                 List<Menu> menus = _menuRepository.GetMenusByUserId(id);
                 Guid?[] parentIds = menus.Select(d => d.ParentId).Distinct().ToArray();
                 var parentMenus = _menuRepository.GetList(Specification<Menu>.Eval(d => parentIds.Any(x => x == d.Id)));
@@ -85,14 +70,8 @@ namespace Cms.NetCore.Services
                 }
                 result.data = treeList;
                 return result;
-            }
-            catch (Exception ex)
-            {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
-            }
+            
+           
         }
         private List<UserMenuTree> Recursion(List<Menu> menuList,Guid? id)
         {
@@ -113,8 +92,7 @@ namespace Cms.NetCore.Services
         public async Task<ListResult<UserMenuTree>> GetMenusByUserIdAsync(Guid id)
         {
             var result = new ListResult<UserMenuTree>();
-            try
-            {
+           
                 List<Menu> menus = await _menuRepository.GetMenusByUserIdAsync(id);
                 Guid?[] parentIds = menus.Select(d => d.ParentId).Distinct().ToArray();
                 var parentMenus =await _menuRepository.GetListAsync(Specification<Menu>.Eval(d => parentIds.Any(x => x == d.Id)));
@@ -133,22 +111,15 @@ namespace Cms.NetCore.Services
                 }
                 result.data = treeList;
                 return result;
-            }
-            catch (Exception ex)
-            {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
-            }
+            
+           
         }
 
         public Result SetMenuButton(MenuButtonModel menuButton)
         {
 
             var result = new Result();
-            try
-            {
+            
                 if (menuButton == null)
                 {
                     result.code = (int)StatusCodeEnum.ParameterError;
@@ -171,22 +142,15 @@ namespace Cms.NetCore.Services
                     result.msg = StatusCodeEnum.Accepted.GetEnumText();
                 }
                 return result;
-            }
-            catch (Exception ex)
-            {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
-            }
+            
+            
 
         }
 
         public async Task<Result> SetMenuButtonAsync(MenuButtonModel menuButton)
         {
             var result = new Result();
-            try
-            {
+           
                 if (menuButton == null)
                 {
                     result.code = (int)StatusCodeEnum.ParameterError;
@@ -209,14 +173,8 @@ namespace Cms.NetCore.Services
                     result.msg = StatusCodeEnum.Accepted.GetEnumText();
                 }
                 return result;
-            }
-            catch (Exception ex)
-            {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
-            }
+            
+           
 
         }
     }

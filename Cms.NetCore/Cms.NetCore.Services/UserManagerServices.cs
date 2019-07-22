@@ -25,204 +25,163 @@ namespace Cms.NetCore.Services
         public Result SetRole(SetRolePara setRolePara)
         {
             var result = new Result();
-            try
+
+            Guid gid = Guid.Parse(setRolePara.Id);
+            bool isDel = _userManagerRepository.DelUserRoleByUserId(gid);
+            if (isDel)
             {
-                Guid gid = Guid.Parse(setRolePara.Id);
-                bool isDel = _userManagerRepository.DelUserRoleByUserId(gid);
-                if (isDel)
+                if (setRolePara.RoleIds != null)
                 {
-                    if (setRolePara.RoleIds != null)
-                    {
-                        List<UserRole> userRoles = setRolePara.RoleIds.Split(',')
-                            .Select(d => new UserRole
-                            {
-                                Id = Guid.NewGuid(),
-                                UserManagerId = gid,
-                                RoleId = Guid.Parse(d)
-                            }).ToList();
-                        bool isAdd = _userManagerRepository.SetRole(userRoles);
-                        if (!isAdd)
+                    List<UserRole> userRoles = setRolePara.RoleIds.Split(',')
+                        .Select(d => new UserRole
                         {
-                            result.code = (int)StatusCodeEnum.Accepted;
-                            result.msg = StatusCodeEnum.Accepted.GetEnumText();
-                            return result;
-                        }
-                    }
-                    else
+                            Id = Guid.NewGuid(),
+                            UserManagerId = gid,
+                            RoleId = Guid.Parse(d)
+                        }).ToList();
+                    bool isAdd = _userManagerRepository.SetRole(userRoles);
+                    if (!isAdd)
                     {
-                        result.code = (int)StatusCodeEnum.ParameterError;
-                        result.msg = StatusCodeEnum.ParameterError.GetEnumText();
+                        result.code = (int)StatusCodeEnum.Accepted;
+                        result.msg = StatusCodeEnum.Accepted.GetEnumText();
                         return result;
                     }
-
                 }
                 else
                 {
-                    result.code = (int)StatusCodeEnum.Accepted;
-                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return result;
                 }
 
-                return result;
             }
-            catch (Exception ex)
+            else
             {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
+                result.code = (int)StatusCodeEnum.Accepted;
+                result.msg = StatusCodeEnum.Accepted.GetEnumText();
                 return result;
             }
+
+            return result;
+
+
         }
 
         public async Task<Result> SetRoleAsync(SetRolePara setRolePara)
         {
             var result = new Result();
-            try
+
+            Guid gid = Guid.Parse(setRolePara.Id);
+            bool isDel = await _userManagerRepository.DelUserRoleByUserIdAsync(gid);
+            if (isDel)
             {
-                Guid gid = Guid.Parse(setRolePara.Id);
-                bool isDel = await _userManagerRepository.DelUserRoleByUserIdAsync(gid);
-                if (isDel)
+                if (setRolePara.RoleIds != null)
                 {
-                    if (setRolePara.RoleIds != null)
-                    {
-                        List<UserRole> userRoles = setRolePara.RoleIds.Split(',')
-                            .Select(d => new UserRole
-                            {
-                                Id = Guid.NewGuid(),
-                                UserManagerId = gid,
-                                RoleId = Guid.Parse(d)
-                            }).ToList();
-                        bool isAdd = await _userManagerRepository.SetRoleAsync(userRoles);
-                        if (!isAdd)
+                    List<UserRole> userRoles = setRolePara.RoleIds.Split(',')
+                        .Select(d => new UserRole
                         {
-                            result.code = (int)StatusCodeEnum.Accepted;
-                            result.msg = StatusCodeEnum.Accepted.GetEnumText();
-                            return result;
-                        }
-                    }
-                    else
+                            Id = Guid.NewGuid(),
+                            UserManagerId = gid,
+                            RoleId = Guid.Parse(d)
+                        }).ToList();
+                    bool isAdd = await _userManagerRepository.SetRoleAsync(userRoles);
+                    if (!isAdd)
                     {
-                        result.code = (int)StatusCodeEnum.ParameterError;
-                        result.msg = StatusCodeEnum.ParameterError.GetEnumText();
+                        result.code = (int)StatusCodeEnum.Accepted;
+                        result.msg = StatusCodeEnum.Accepted.GetEnumText();
                         return result;
                     }
-
                 }
                 else
                 {
-                    result.code = (int)StatusCodeEnum.Accepted;
-                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return result;
                 }
 
-                return result;
             }
-            catch (Exception ex)
+            else
             {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
+                result.code = (int)StatusCodeEnum.Accepted;
+                result.msg = StatusCodeEnum.Accepted.GetEnumText();
                 return result;
             }
+
+            return result;
+
+
         }
 
         public DataResult<UserManager> SignIn(LoginPara loginPara)
         {
             var result = new DataResult<UserManager>();
-            try
+
+            var userLogin = new UserLogin
             {
-                var userLogin = new UserLogin {
-                    UserName=loginPara.UserName,
-                    PassWord=loginPara.PassWord,
-                    LastLoginIp=loginPara.Ip
-                };
-                result.data = _userManagerRepository.SignIn(userLogin);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
-            }
+                UserName = loginPara.UserName,
+                PassWord = loginPara.PassWord,
+                LastLoginIp = loginPara.Ip
+            };
+            result.data = _userManagerRepository.SignIn(userLogin);
+            return result;
+
+
         }
 
         public async Task<DataResult<UserManager>> SignInAsync(LoginPara loginPara)
         {
             var result = new DataResult<UserManager>();
-            try
+
+            var userLogin = new UserLogin
             {
-                var userLogin = new UserLogin
-                {
-                    UserName = loginPara.UserName,
-                    PassWord = loginPara.PassWord,
-                    LastLoginIp = loginPara.Ip
-                };
-                result.data = await _userManagerRepository.SignInAsync(userLogin);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
-            }
+                UserName = loginPara.UserName,
+                PassWord = loginPara.PassWord,
+                LastLoginIp = loginPara.Ip
+            };
+            result.data = await _userManagerRepository.SignInAsync(userLogin);
+            return result;
+
+
         }
 
         public Result UpdatePassWord(UpdatePwdPara updatePwdPara)
         {
             var result = new Result();
-            try
+
+            var userLogin = new UserLogin
             {
-                var userLogin = new UserLogin
-                {
-                    Id=updatePwdPara.Id,
-                    PassWord=updatePwdPara.NewPwd
-                };
-                bool isUpdate =  _userManagerRepository.UpdatePassWord(userLogin);
-                if(!isUpdate)
-                {
-                    result.code = (int)StatusCodeEnum.Accepted;
-                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
-                }
-                return result;
-            }
-            catch (Exception ex)
+                Id = updatePwdPara.Id,
+                PassWord = updatePwdPara.NewPwd
+            };
+            bool isUpdate = _userManagerRepository.UpdatePassWord(userLogin);
+            if (!isUpdate)
             {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
+                result.code = (int)StatusCodeEnum.Accepted;
+                result.msg = StatusCodeEnum.Accepted.GetEnumText();
             }
+            return result;
+
+
         }
 
         public async Task<Result> UpdatePassWordAsync(UpdatePwdPara updatePwdPara)
         {
             var result = new Result();
-            try
+
+            var userLogin = new UserLogin
             {
-                var userLogin = new UserLogin
-                {
-                    Id = updatePwdPara.Id,
-                    PassWord = updatePwdPara.NewPwd
-                };
-                bool isUpdate = await _userManagerRepository.UpdatePassWordAsync(userLogin);
-                if (!isUpdate)
-                {
-                    result.code = (int)StatusCodeEnum.Accepted;
-                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
-                }
-                return result;
-            }
-            catch (Exception ex)
+                Id = updatePwdPara.Id,
+                PassWord = updatePwdPara.NewPwd
+            };
+            bool isUpdate = await _userManagerRepository.UpdatePassWordAsync(userLogin);
+            if (!isUpdate)
             {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
+                result.code = (int)StatusCodeEnum.Accepted;
+                result.msg = StatusCodeEnum.Accepted.GetEnumText();
             }
+            return result;
+
+
         }
     }
 }

@@ -26,19 +26,12 @@ namespace Cms.NetCore.Services
         public ListResult<Tree> GetAllMenuButtonByRoleId(Guid id)
         {
             var result = new ListResult<Tree>();
-            try
-            {
-                List<RoleMenuButtonList> data = _roleRepository.GetAllMenuButtonByRoleId(id);
-                result.data = GetAllMenuButtonByRoleIdSelect(data, id);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
-            }
+
+            List<RoleMenuButtonList> data = _roleRepository.GetAllMenuButtonByRoleId(id);
+            result.data = GetAllMenuButtonByRoleIdSelect(data, id);
+            return result;
+
+
         }
         private List<Tree> GetAllMenuButtonByRoleIdSelect(List<RoleMenuButtonList> data, Guid id)
         {
@@ -102,129 +95,107 @@ namespace Cms.NetCore.Services
         public async Task<ListResult<Tree>> GetAllMenuButtonByRoleIdAsync(Guid id)
         {
             var result = new ListResult<Tree>();
-            try
-            {
-                List<RoleMenuButtonList> data = await _roleRepository.GetAllMenuButtonByRoleIdAsync(id);
-                result.data = GetAllMenuButtonByRoleIdSelect(data, id);
-                return result;
-            }
-            catch (Exception ex)
-            {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
-                return result;
-            }
+
+            List<RoleMenuButtonList> data = await _roleRepository.GetAllMenuButtonByRoleIdAsync(id);
+            result.data = GetAllMenuButtonByRoleIdSelect(data, id);
+            return result;
+
+
         }
 
         public Result Authorize(RoleMenuPara roleMenuPara)
         {
             var result = new Result();
-            try
+
+            bool isDel = _roleRepository.DelRoleMenuButtonByRoleId(roleMenuPara.RoleId);
+            if (isDel)
             {
-                bool isDel = _roleRepository.DelRoleMenuButtonByRoleId(roleMenuPara.RoleId);
-                if (isDel)
+                if (roleMenuPara.MenuButtonIds != null)
                 {
-                    if (roleMenuPara.MenuButtonIds != null)
+                    List<RoleMenuButton> roleMenuButtonList = new List<RoleMenuButton>();
+                    foreach (var item in roleMenuPara.MenuButtonIds)
                     {
-                        List<RoleMenuButton> roleMenuButtonList = new List<RoleMenuButton>();
-                        foreach (var item in roleMenuPara.MenuButtonIds)
+                        var roleMenuButton = new RoleMenuButton
                         {
-                            var roleMenuButton = new RoleMenuButton
-                            {
-                                Id = Guid.NewGuid(),
-                                RoleId = roleMenuPara.RoleId,
-                                MenuButtonId = item.MenuButtonId.Value
-                            };
-                            roleMenuButtonList.Add(roleMenuButton);
-                        }
-                        bool isAdd = _roleRepository.Authorize(roleMenuButtonList);
-                        if (!isAdd)
-                        {
-                            result.code = (int)StatusCodeEnum.Accepted;
-                            result.msg = StatusCodeEnum.Accepted.GetEnumText();
-                            return result;
-                        }
+                            Id = Guid.NewGuid(),
+                            RoleId = roleMenuPara.RoleId,
+                            MenuButtonId = item.MenuButtonId.Value
+                        };
+                        roleMenuButtonList.Add(roleMenuButton);
                     }
-                    else
+                    bool isAdd = _roleRepository.Authorize(roleMenuButtonList);
+                    if (!isAdd)
                     {
-                        result.code = (int)StatusCodeEnum.ParameterError;
-                        result.msg = StatusCodeEnum.ParameterError.GetEnumText();
+                        result.code = (int)StatusCodeEnum.Accepted;
+                        result.msg = StatusCodeEnum.Accepted.GetEnumText();
                         return result;
                     }
-
                 }
                 else
                 {
-                    result.code = (int)StatusCodeEnum.Accepted;
-                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return result;
                 }
 
-                return result;
             }
-            catch (Exception ex)
+            else
             {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
+                result.code = (int)StatusCodeEnum.Accepted;
+                result.msg = StatusCodeEnum.Accepted.GetEnumText();
                 return result;
             }
+
+            return result;
+
         }
 
         public async Task<Result> AuthorizeAsync(RoleMenuPara roleMenuPara)
         {
             var result = new Result();
-            try
+
+            bool isDel = await _roleRepository.DelRoleMenuButtonByRoleIdAsync(roleMenuPara.RoleId);
+            if (isDel)
             {
-                bool isDel = await _roleRepository.DelRoleMenuButtonByRoleIdAsync(roleMenuPara.RoleId);
-                if (isDel)
+                if (roleMenuPara.MenuButtonIds.Any())
                 {
-                    if (roleMenuPara.MenuButtonIds.Any())
+                    List<RoleMenuButton> roleMenuButtonList = new List<RoleMenuButton>();
+                    foreach (var item in roleMenuPara.MenuButtonIds)
                     {
-                        List<RoleMenuButton> roleMenuButtonList = new List<RoleMenuButton>();
-                        foreach (var item in roleMenuPara.MenuButtonIds)
+                        var roleMenuButton = new RoleMenuButton
                         {
-                            var roleMenuButton = new RoleMenuButton
-                            {
-                                Id = Guid.NewGuid(),
-                                RoleId = roleMenuPara.RoleId,
-                                MenuButtonId = item.MenuButtonId.Value
-                            };
-                            roleMenuButtonList.Add(roleMenuButton);
-                        }
-                        bool isAdd = await _roleRepository.AuthorizeAsync(roleMenuButtonList);
-                        if (!isAdd)
-                        {
-                            result.code = (int)StatusCodeEnum.Accepted;
-                            result.msg = StatusCodeEnum.Accepted.GetEnumText();
-                            return result;
-                        }
+                            Id = Guid.NewGuid(),
+                            RoleId = roleMenuPara.RoleId,
+                            MenuButtonId = item.MenuButtonId.Value
+                        };
+                        roleMenuButtonList.Add(roleMenuButton);
                     }
-                    else
+                    bool isAdd = await _roleRepository.AuthorizeAsync(roleMenuButtonList);
+                    if (!isAdd)
                     {
-                        result.code = (int)StatusCodeEnum.ParameterError;
-                        result.msg = StatusCodeEnum.ParameterError.GetEnumText();
+                        result.code = (int)StatusCodeEnum.Accepted;
+                        result.msg = StatusCodeEnum.Accepted.GetEnumText();
                         return result;
                     }
-
                 }
                 else
                 {
-                    result.code = (int)StatusCodeEnum.Accepted;
-                    result.msg = StatusCodeEnum.Accepted.GetEnumText();
+                    result.code = (int)StatusCodeEnum.ParameterError;
+                    result.msg = StatusCodeEnum.ParameterError.GetEnumText();
                     return result;
                 }
 
-                return result;
             }
-            catch (Exception ex)
+            else
             {
-                ex.Source = this.GetType().Name;
-                result.code = (int)StatusCodeEnum.Error;
-                result.msg = $"{ex.Source}出现异常,请联系管理员";
+                result.code = (int)StatusCodeEnum.Accepted;
+                result.msg = StatusCodeEnum.Accepted.GetEnumText();
                 return result;
             }
+
+            return result;
+
+
         }
     }
 }

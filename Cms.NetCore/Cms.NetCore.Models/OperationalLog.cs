@@ -43,6 +43,7 @@ namespace Cms.NetCore.Models
         /// <summary>
         /// 操作人信息
         /// </summary>
+        [IsTable]
         public virtual UserManager UserManager { get; set; }
     }
 }
